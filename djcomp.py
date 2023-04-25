@@ -21,8 +21,7 @@ class Gzip:
                 shutil.copyfileobj(f_in, f_out)
             f_in.close()
             f_out.close()
-        afterCompressionTime = time.time()
-        self.compressionTime = afterCompressionTime - beforeCompressionTime
+        self.compressionTime = time.time() - beforeCompressionTime
 
     def decompress(self):
         beforeDecompressionTime = time.time()
@@ -33,8 +32,7 @@ class Gzip:
                 f_out.write(decompressedData.decode('ascii'))
                 f_in.close()
                 f_out.close()
-        afterDecompressionTime = time.time()
-        self.decompressionTime = afterDecompressionTime - beforeDecompressionTime
+        self.decompressionTime = time.time() - beforeDecompressionTime
 
 class Bzip:
     def __init__(self, filename = '2000-word-text.txt'):
@@ -53,8 +51,7 @@ class Bzip:
                 shutil.copyfileobj(f_in, f_out)
             f_in.close()
             f_out.close()
-        afterCompressionTime = time.time()
-        self.compressionTime = afterCompressionTime - beforeCompressionTime
+        self.compressionTime = time.time() - beforeCompressionTime
 
     def decompress(self):
         beforeDecompressionTime = time.time()
@@ -65,8 +62,7 @@ class Bzip:
                 f_out.write(decompressedData.decode('ascii'))
                 f_in.close()
                 f_out.close()
-        afterDecompressionTime = time.time()
-        self.decompressionTime = afterDecompressionTime - beforeDecompressionTime
+        self.decompressionTime = time.time() - beforeDecompressionTime
 
 class Zip:
     def __init__(self, filename = '2000-word-text.txt'):
@@ -85,8 +81,7 @@ class Zip:
                 f_out.write(self.filename)
             f_in.close()
             f_out.close()
-        afterCompressionTime = time.time()
-        self.compressionTime = afterCompressionTime - beforeCompressionTime
+        self.compressionTime = time.time() - beforeCompressionTime
 
     def decompress(self):
         beforeDecompressionTime = time.time()
@@ -96,8 +91,7 @@ class Zip:
                 f_out.write(data_in.decode('ascii'))
                 f_in.close()
                 f_out.close()
-        afterDecompressionTime = time.time()
-        self.decompressionTime = afterDecompressionTime - beforeDecompressionTime
+        self.decompressionTime = time.time() - beforeDecompressionTime
 
 if __name__ == '__main__':
     '''uncompressed = Gzip('2000-word-text.txt')
