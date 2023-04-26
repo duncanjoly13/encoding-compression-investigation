@@ -1,3 +1,4 @@
+#TODO fix UnicodeDecodeError
 #TODO finish NaCl class
 #TODO fix extra \n
 #TODO implement AES or RSA

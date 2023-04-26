@@ -50,7 +50,7 @@ class Bzip:
 
     def compress(self):
         beforeCompressionTime = time.time()
-        with open(self.filename, 'r') as f_in:
+        with open(self.filename, 'rb') as f_in:
             with bz2.open(str(self.filename + self.suffix), 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
             f_in.close()

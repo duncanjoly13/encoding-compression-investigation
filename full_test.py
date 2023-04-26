@@ -8,10 +8,12 @@ class Test:
         self.results = Sheet
 
         for compMethod in self.compressionMethods:
-            compMethod(filename).compress()
+            compObj = compMethod(filename)
+            compObj.compress()
             for encMethod in self.encryptionMethods:
-                encMethod(filename + compMethod.suffix).encrypt()
-                encMethod(filename + compMethod.suffix + encMethod.suffix).decrypt()
+                encObj = encMethod(filename + compObj.suffix)
+                encObj.encrypt()
+                encMethod(filename + compObj.suffix + encObj.suffix).decrypt()
                 compMethod(filename + compMethod.suffix + '.decrypted').decompress()
                 self.results.addData((filename + ',') + (str(compMethod.filesize) + ',') +(encMethod.type + ',') + (compMethod.type + ',') + ('Compression First,') + (str(encMethod.encryptionTime) + ',') + (str(compMethod.compressionTime) + ',') + (str(encMethod.encryptedSize) + ',') + (str(compMethod.compressedSize) + ',') + (str(compMethod.decompresionTime) + ',') + (str(encMethod.decryptionTime) + '\n'))
 
@@ -21,6 +23,7 @@ class Test:
                 compMethod(filename + encMethod.suffix).compress()
                 compMethod(filename + encMethod.suffix + compMethod.suffix).decompress()
                 encMethod(filename + encMethod.suffix + '.decompressed').decrypt()
+                self.results.addData((filename + ',') + (str(compMethod.filesize) + ',') +(encMethod.type + ',') + (compMethod.type + ',') + ('Compression First,') + (str(encMethod.encryptionTime) + ',') + (str(compMethod.compressionTime) + ',') + (str(encMethod.encryptedSize) + ',') + (str(compMethod.compressedSize) + ',') + (str(compMethod.decompresionTime) + ',') + (str(encMethod.decryptionTime) + '\n'))
 
 class Sheet:
     def __init__(self):
@@ -32,3 +35,6 @@ class Sheet:
 
     def addData(self, data):
         self.file.write(data)
+
+if __name__ == '__main__':
+    Test('2000-word-text.txt')
