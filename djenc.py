@@ -54,7 +54,7 @@ class DJFernet:
             f_out.write(decryptKey.decrypt(decryptData).decode('ascii'))
             f_out.close()
         self.decryptionTime = time.time() - decryptionStartTime
-        self.decryptedSize = str(os.path.getsize(str(self.filename + self.suffix)))
+        self.decryptedSize = str(os.path.getsize(self.filename))
 
 class NaCl:
     def __init__(self, filename = '2000-word-text.txt', key = ''):
@@ -102,8 +102,8 @@ if __name__ == '__main__':
     toDecrypt = DJFernet('2000-word-text.txt.frnt')
     decrypted = toDecrypt.decrypt()'''
 
-    initial = NaCl('2000-word-text.txt')
+    '''initial = NaCl('2000-word-text.txt')
     encrypted = initial.encrypt()
     with open('2000-word-text.txt.nacl') as file:
         toDecrypt = NaCl('2000-word-text.txt.nacl', hashlib.sha1(file.read()).hexdigest())
-        # decrypted = toDecrypt.decrypt()
+        # decrypted = toDecrypt.decrypt()'''

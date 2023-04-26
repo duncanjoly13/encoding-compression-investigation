@@ -1,3 +1,4 @@
+#TODO fix UnicodeDecodeError
 #TODO add FileExists and FileNotFound error handing
 #TODO fix having extra \n
 
@@ -35,7 +36,7 @@ class Gzip:
                 f_in.close()
                 f_out.close()
         self.decompressionTime = time.time() - beforeDecompressionTime
-        self.decompressedSize = str(os.path.getsize(str(self.filename + self.suffix)))
+        self.decompressedSize = str(os.path.getsize(self.filename))
 
 class Bzip:
     def __init__(self, filename = '2000-word-text.txt'):
@@ -100,7 +101,7 @@ class Zip:
                 f_in.close()
                 f_out.close()
         self.decompressionTime = time.time() - beforeDecompressionTime
-        self.decompressedSize = str(os.path.getsize(str(self.filename + self.suffix)))
+        self.decompressedSize = str(os.path.getsize(self.filename))
 
 if __name__ == '__main__':
     '''uncompressed = Gzip('2000-word-text.txt')
@@ -110,7 +111,7 @@ if __name__ == '__main__':
 
     '''uncompressed = Bzip('2000-word-text.txt')
     compressed = uncompressed.compress()
-    newCompressed = Bzip('2000-word-text.txt.bz')
+    newCompressed = Bzip('2000-word-text.txt.bzip')
     decompressed = newCompressed.decompress()'''
 
     '''uncompressed = Zip('2000-word-text.txt')
