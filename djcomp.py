@@ -1,4 +1,5 @@
 #TODO fix UnicodeDecodeError
+#TODO implement output folder
 #TODO add FileExists and FileNotFound error handing
 #TODO fix having extra \n
 
@@ -29,10 +30,10 @@ class Gzip:
     def decompress(self):
         beforeDecompressionTime = time.time()
         with open(self.filename, 'rb') as f_in:
-            with open(str(self.filename + 'decompressed'), 'w') as f_out:
+            with open(str(self.filename + '.decompressed'), 'wb') as f_out:
                 data_in = f_in.read()
                 decompressedData = gzip.decompress(data_in)
-                f_out.write(decompressedData.decode('ascii'))
+                f_out.write(decompressedData)
                 f_in.close()
                 f_out.close()
         self.decompressionTime = time.time() - beforeDecompressionTime
@@ -53,7 +54,8 @@ class Bzip:
         beforeCompressionTime = time.time()
         with open(self.filename, 'rb') as f_in:
             with bz2.open(str(self.filename + self.suffix), 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
+                f_out.write(f_in.read())
+                f_out.flush()
             f_in.close()
             f_out.close()
         self.compressionTime = time.time() - beforeCompressionTime
@@ -61,15 +63,14 @@ class Bzip:
 
     def decompress(self):
         beforeDecompressionTime = time.time()
-        with open(self.filename, 'r') as f_in:
-            with open(str(self.filename + 'decompressed'), 'w') as f_out:
+        with bz2.open(self.filename, 'rb') as f_in:
+            with open(str(self.filename + '.decompressed'), 'wb') as f_out:
+                print(f_in.read())
                 data_in = f_in.read()
-                decompressedData = bz2.decompress(data_in)
-                f_out.write(decompressedData.decode('ascii'))
-                f_in.close()
+                f_out.write(data_in)
                 f_out.close()
         self.decompressionTime = time.time() - beforeDecompressionTime
-        self.decompressedSize = str(os.path.getsize(str(self.filename + self.suffix)))
+        self.decompressedSize = str(os.path.getsize(self.filename))
 
 class Zip:
     def __init__(self, filename = '2000-word-text.txt'):
@@ -95,8 +96,9 @@ class Zip:
     def decompress(self):
         beforeDecompressionTime = time.time()
         with zipfile.ZipFile(self.filename) as f_in:
-            with open(str(self.filename + 'decompressed'), 'w') as f_out:
-                data_in = f_in.read(self.filename.rstrip(self.suffix))
+            with open(str(self.filename + '.decompressed'), 'w') as f_out:
+                newFilename = self.filename[:self.filename.find('.zip')]
+                data_in = f_in.read(newFilename)
                 f_out.write(data_in.decode('ascii'))
                 f_in.close()
                 f_out.close()

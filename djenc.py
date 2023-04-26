@@ -1,4 +1,5 @@
 #TODO fix UnicodeDecodeError
+#TODO implement output folder
 #TODO finish NaCl class
 #TODO fix extra \n
 #TODO implement AES or RSA
@@ -44,14 +45,15 @@ class DJFernet:
     def decrypt(self):
         decryptionStartTime = time.time()
         decryptFP = open(self.filename, 'rb')
-        decryptData = decryptFP.read()
+        toDecrypt = decryptFP.read()
         decryptFP.close()
-        with open(str(hashlib.sha1(decryptData).hexdigest()) + '-key', 'rb') as f_in:
+        with open(str(hashlib.sha1(toDecrypt).hexdigest()) + '-key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)
-        with open(str(self.filename[:-5] + '.decrypted'), 'w') as f_out:
-            f_out.write(decryptKey.decrypt(decryptData).decode('ascii'))
+        with open(str(self.filename[:-5] + '.decrypted'), 'wb') as f_out:
+            decryptedData = (decryptKey.decrypt(toDecrypt))
+            f_out.write(decryptedData)
             f_out.close()
         self.decryptionTime = time.time() - decryptionStartTime
         self.decryptedSize = str(os.path.getsize(self.filename))
@@ -80,7 +82,7 @@ class NaCl:
                 f_out.write(self.safe.encrypt(f_in.read().encode()))
                 f_out.close()
                 
-                with open(self.filename + '.nacl') as encryptedFile:
+                with open(self.filename + self.suffix) as encryptedFile:
                     with open(str(hashlib.sha1(str(encryptedFile.read()).encode()).hexdigest()) + '-key', 'wb') as keyfile:
                         # keyfile.write(str(self.safe.__hash__()).encode())
                         keyfile.write(self.key)
