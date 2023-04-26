@@ -16,6 +16,7 @@ class DJFernet:
         self.encryptedSize = 0
         self.key = ''
         self.hashString = ''
+        self.suffix = '.frnt'
 
     def encrypt(self):
         encryptionStartTime = time.time()
@@ -27,7 +28,7 @@ class DJFernet:
         encMessage = f.encrypt(rawFileData)
         fileHash = hashlib.sha1(encMessage)
         self.hashString = fileHashString = fileHash.hexdigest()
-        encDataFP = open(str(self.filename + '.frnt'), 'wb')
+        encDataFP = open(str(self.filename + self.suffix), 'wb')
         encDataFP.write(encMessage)
         encDataFP.flush()
         encDataFP.close()
@@ -37,6 +38,7 @@ class DJFernet:
         keyFP.close()
         self.key = key
         self.encryptionTime = time.time() - encryptionStartTime
+        self.encryptedSize = str(os.path.getsize(str(self.filename + self.suffix)))
     
     def decrypt(self):
         decryptionStartTime = time.time()
@@ -51,6 +53,7 @@ class DJFernet:
             f_out.write(decryptKey.decrypt(decryptData).decode('ascii'))
             f_out.close()
         self.decryptionTime = time.time() - decryptionStartTime
+        self.decryptedSize = str(os.path.getsize(str(self.filename + self.suffix)))
 
 class NaCl:
     def __init__(self, filename = '2000-word-text.txt', key = ''):
@@ -62,6 +65,7 @@ class NaCl:
         self.decryptedSize = 0
         self.encryptedSize = 0
         # self.hashString = ''
+        self.suffix = '.nacl'
         if key == '':
             self.key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
         else:
@@ -71,7 +75,7 @@ class NaCl:
     def encrypt(self):
         encryptionStartTime = time.time()
         with open(self.filename) as f_in:
-            with open(str(self.filename + '.nacl'), 'wb') as f_out:
+            with open(str(self.filename + self.suffix), 'wb') as f_out:
                 f_out.write(self.safe.encrypt(f_in.read().encode()))
                 f_out.close()
                 
@@ -84,8 +88,11 @@ class NaCl:
 
             f_in.close()
         self.encryptionTime = time.time() - encryptionStartTime
+        self.encryptedSize = str(os.path.getsize(str(self.filename + self.suffix)))
 
     # def decrypt(self):
+        
+        # self.decryptedSize = str(os.path.getsize(str(self.filename + self.suffix)))
 
 
 if __name__ == '__main__':
