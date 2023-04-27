@@ -1,6 +1,6 @@
-#TODO implement output folder
+#TODO implement output folder, excess file deletion after test is run
 
-import djcomp, djenc, time
+import djcomp, djenc, time, os
 
 class Test:
     def __init__(self, filename):
@@ -8,6 +8,9 @@ class Test:
         self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
         self.encryptionMethods = [djenc.DJFernet]
         self.results = Sheet()
+        newpath = r'./results' 
+        if not os.path.exists(newpath):
+            os.makedirs(newpath)
 
     def run(self):
         self.compressionFirst(self.basefilename)
