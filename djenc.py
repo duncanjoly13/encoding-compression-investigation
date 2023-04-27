@@ -1,8 +1,8 @@
-#TODO fix UnicodeDecodeError
 #TODO implement output folder
 #TODO finish NaCl class
 #TODO fix extra \n
 #TODO implement AES or RSA
+#TODO add FileExists and FileNotFound error handing
 
 import os, hashlib, time, nacl.secret, nacl.utils
 from cryptography.fernet import Fernet
@@ -12,10 +12,10 @@ class DJFernet:
         self.filesize = os.path.getsize(filename)
         self.type = 'Fernet'
         self.filename = filename
-        self.encryptionTime = 0
-        self.decryptionTime = 0
-        self.decryptedSize = 0
-        self.encryptedSize = 0
+        self.encryptionTime = 69420
+        self.decryptionTime = 69420
+        self.decryptedSize = 69420
+        self.encryptedSize = 69420
         self.key = ''
         self.hashString = ''
         self.suffix = '.frnt'
@@ -51,7 +51,7 @@ class DJFernet:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)
-        with open(str(self.filename[:-5] + '.decrypted'), 'wb') as f_out:
+        with open(str(self.filename + '.decrypted'), 'wb') as f_out: #ERROR filename changes
             decryptedData = (decryptKey.decrypt(toDecrypt))
             f_out.write(decryptedData)
             f_out.close()

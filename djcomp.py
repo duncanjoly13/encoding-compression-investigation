@@ -1,4 +1,3 @@
-#TODO fix Bzip
 #TODO implement output folder
 #TODO add FileExists and FileNotFound error handing
 #TODO fix having extra \n
@@ -41,7 +40,7 @@ class Gzip:
 
 class Bzip:
     def __init__(self, filename = '2000-word-text.txt'):
-        self.filesize = os.path.getsize(filename)
+        self.filesize = os.path.getsize(filename) #filename.rfind('.')
         self.type = 'bzip'
         self.filename = filename
         self.compressionTime = 0

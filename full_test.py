@@ -1,5 +1,4 @@
 #TODO implement output folder
-#TODO fix csv
 
 import djcomp, djenc, time
 
@@ -21,10 +20,11 @@ class Test:
             for encMethod in self.encryptionMethods:
                 encObj = encMethod(filename + compObj.suffix)
                 encObj.encrypt()
-                encMethod(filename + compObj.suffix + encObj.suffix).decrypt()
-                decompObj = compMethod(filename + compObj.suffix + '.decrypted')
+                deencObj = encMethod(filename + compObj.suffix + encObj.suffix)
+                deencObj.decrypt()
+                decompObj = compMethod(filename + compObj.suffix + encObj.suffix + '.decrypted')
                 decompObj.decompress()
-                self.results.addData(str((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(encObj.decryptionTime) + '\n')))
+                self.results.addData(str((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(deencObj.decryptionTime) + '\n')))
 
     def encryptionFirst(self, filename):
         for encMethod in self.encryptionMethods:
@@ -37,7 +37,7 @@ class Test:
                 decompObj.decompress()
                 deencObj = encMethod(filename + encObj.suffix +  decompObj.suffix + '.decompressed')
                 deencObj.decrypt()
-                self.results.addData((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(encObj.decryptionTime) + '\n'))
+                self.results.addData((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(deencObj.decryptionTime) + '\n'))
 
 class Sheet:
     def __init__(self):
