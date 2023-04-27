@@ -1,3 +1,4 @@
+#TODO fix source file size
 #TODO implement output folder, excess file deletion after test is run
 
 import djcomp, djenc, time, os
