@@ -6,12 +6,12 @@ import djcomp, djenc, time
 class Test:
     def __init__(self, filename):
         self.basefilename = filename
-        self.compressionMethods = [djcomp.Gzip, djcomp.Zip] # missing Bzip
+        self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
         self.encryptionMethods = [djenc.DJFernet]
         self.results = Sheet()
 
     def run(self):
-        # self.compressionFirst(self.basefilename)
+        self.compressionFirst(self.basefilename)
         self.encryptionFirst(self.basefilename)
 
     def compressionFirst(self, filename):
@@ -37,11 +37,11 @@ class Test:
                 decompObj.decompress()
                 deencObj = encMethod(filename + encObj.suffix +  decompObj.suffix + '.decompressed')
                 deencObj.decrypt()
-                self.results.addData((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(encObj.decryptionTime) + '\n'))
+                self.results.addData((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(encObj.decryptionTime) + '\n'))
 
 class Sheet:
     def __init__(self):
-        self.filename = str(str(time.strftime("%Y-%m-%d %H:%M")) + '-results.csv')
+        self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
         self.header = 'source file, source file size (b), encryption algorithm, compression algorithm, order, encryption time (s), compression time (s), encrypted file size (b), compressed file size (b), decompression time (s), decryption time (s)\n'
         file = open(self.filename, 'w')
         file.write(self.header)

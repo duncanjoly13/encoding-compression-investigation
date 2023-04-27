@@ -1,4 +1,4 @@
-#TODO fix UnicodeDecodeError
+#TODO fix Bzip
 #TODO implement output folder
 #TODO add FileExists and FileNotFound error handing
 #TODO fix having extra \n
@@ -65,7 +65,6 @@ class Bzip:
         beforeDecompressionTime = time.time()
         with bz2.open(self.filename, 'rb') as f_in:
             with open(str(self.filename + '.decompressed'), 'wb') as f_out:
-                print(f_in.read())
                 data_in = f_in.read()
                 f_out.write(data_in)
                 f_out.close()
