@@ -8,7 +8,7 @@ import os, hashlib, time, nacl.secret, nacl.utils
 from cryptography.fernet import Fernet
 
 class DJFernet:
-    def __init__(self, filename = '2000-word-text.txt'):
+    def __init__(self, filename):
         self.filesize = os.path.getsize(filename)
         self.type = 'Fernet'
         self.filename = filename
@@ -59,7 +59,7 @@ class DJFernet:
         self.decryptedSize = str(os.path.getsize(self.filename))
 
 class NaCl:
-    def __init__(self, filename = '2000-word-text.txt', key = ''):
+    def __init__(self, filename, key = ''):
         self.filesize = os.path.getsize(filename)
         self.type = 'NaCl'
         self.filename = filename

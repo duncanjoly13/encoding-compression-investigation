@@ -6,7 +6,7 @@
 import gzip, os, shutil, time, bz2, zipfile
 
 class Gzip:
-    def __init__(self, filename = '2000-word-text.txt'):
+    def __init__(self, filename):
         self.filesize = os.path.getsize(filename)
         self.type = 'gzip'
         self.filename = filename
@@ -39,8 +39,8 @@ class Gzip:
         self.decompressedSize = str(os.path.getsize(self.filename))
 
 class Bzip:
-    def __init__(self, filename = '2000-word-text.txt'):
-        self.filesize = os.path.getsize(filename) #filename.rfind('.')
+    def __init__(self, filename):
+        self.filesize = os.path.getsize(filename)
         self.type = 'bzip'
         self.filename = filename
         self.compressionTime = 0
@@ -71,7 +71,7 @@ class Bzip:
         self.decompressedSize = str(os.path.getsize(self.filename))
 
 class Zip:
-    def __init__(self, filename = '2000-word-text.txt'):
+    def __init__(self, filename):
         self.filesize = os.path.getsize(filename)
         self.type = 'zip'
         self.filename = filename
