@@ -1,4 +1,4 @@
-#TODO implement output folder
+#TODO implement output folder - NEED TO EITHER HAVE ZIP NOT CONTAIN FOLDER OR FIGURE OUT HOW TO EXTRACT FILE FROM FOLDER IN ZIP
 #TODO add FileExists and FileNotFound error handing
 #TODO fix having extra \n
 
@@ -105,14 +105,15 @@ class Zip:
     def decompress(self):
         beforeDecompressionTime = time.time()
         with zipfile.ZipFile('./results/' + self.filename) as f_in:
-            with open(str('./results/' + self.filename + '.decompressed'), 'w') as f_out:
+            f_in.extractall('./results')
+            '''with open(str('./results/' + self.filename + '.decompressed'), 'w') as f_out:
                 newFilename = self.filename[:self.filename.find('.zip')]
-                print(f_in.filename)
-                print('./results/' + newFilename)
                 data_in = f_in.read(newFilename)
                 f_out.write(data_in.decode('ascii'))
                 f_in.close()
-                f_out.close()
+                f_out.close()'''
+            shutil.copy('./results/results/' + self.filename[:self.filename.find('.txt') + 4], './results/' + self.filename + '.decompressed')
+            f_in.close()
         self.decompressionTime = time.time() - beforeDecompressionTime
         self.decompressedSize = str(os.path.getsize('./results/' + self.filename))
 

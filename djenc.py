@@ -37,7 +37,7 @@ class DJFernet:
         encDataFP.write(encMessage)
         encDataFP.flush()
         encDataFP.close()
-        keyFP = open('./results/' + '{}-key'.format(fileHashString), 'wb')
+        keyFP = open('./keys/' + '{}-key'.format(fileHashString), 'wb')
         keyFP.write(key)
         keyFP.flush()
         keyFP.close()
@@ -50,7 +50,7 @@ class DJFernet:
         decryptFP = open('./results/' + self.filename, 'rb')
         toDecrypt = decryptFP.read()
         decryptFP.close()
-        with open(str('./results/' + hashlib.sha1(toDecrypt).hexdigest()) + '-key', 'rb') as f_in:
+        with open(str('./keys/' + hashlib.sha1(toDecrypt).hexdigest()) + '-key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)

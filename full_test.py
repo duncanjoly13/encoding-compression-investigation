@@ -9,21 +9,21 @@ class Test:
         self.encryptionMethods = [djenc.DJFernet]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
+        self.keysFolder = r'./keys/'
         self.basefilename = filename
 
         os.makedirs(self.resultsFolder)
+        os.makedirs(self.keysFolder)
         with open(filename) as sourceFile:
             with open(str(self.resultsFolder + filename), 'w') as newFile:
                 newFile.write(sourceFile.read())
                 newFile.flush()
                 newFile.close()
                 sourceFile.close()
-        
         self.basefilename = self.resultsFolder + self.basefilename
         '''else:
             print(resultsFolder, 'exists!')
             self.basefilename = '''''
-        
 
     def run(self):
         self.compressionFirst(self.basefilename)
