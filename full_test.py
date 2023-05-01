@@ -5,14 +5,25 @@ import djcomp, djenc, time, os
 
 class Test:
     def __init__(self, filename):
-        self.basefilename = filename
         self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
         self.encryptionMethods = [djenc.DJFernet]
         self.results = Sheet()
-        self.dataFolder = r'./data/'
-        resultsFolder = r'./results/'
-        if not os.path.exists(resultsFolder):
-            os.makedirs(resultsFolder)
+        self.resultsFolder = r'./results/'
+        self.basefilename = filename
+
+        os.makedirs(self.resultsFolder)
+        with open(filename) as sourceFile:
+            with open(str(self.resultsFolder + filename), 'w') as newFile:
+                newFile.write(sourceFile.read())
+                newFile.flush()
+                newFile.close()
+                sourceFile.close()
+        
+        self.basefilename = self.resultsFolder + self.basefilename
+        '''else:
+            print(resultsFolder, 'exists!')
+            self.basefilename = '''''
+        
 
     def run(self):
         self.compressionFirst(self.basefilename)

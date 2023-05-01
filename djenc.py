@@ -9,9 +9,7 @@ from cryptography.fernet import Fernet
 
 class DJFernet:
     def __init__(self, filename):
-        self.filesize = os.path.getsize(filename)
         self.type = 'Fernet'
-        self.filename = filename
         self.encryptionTime = 0
         self.decryptionTime = 0
         self.decryptedSize = 0
@@ -19,10 +17,15 @@ class DJFernet:
         self.key = ''
         self.hashString = ''
         self.suffix = '.frnt'
+        if filename.find('results') > -1:
+            self.filename = filename[(filename.find('results/') + 8):]
+        else:
+            self.filename = filename
+        self.filesize = os.path.getsize('./results/' + self.filename)
 
     def encrypt(self):
         encryptionStartTime = time.time()
-        dataFileDataFP = open(self.filename, 'rb')
+        dataFileDataFP = open('./results/' + self.filename, 'rb')
         rawFileData = dataFileDataFP.read()
         dataFileDataFP.close()
         key = Fernet.generate_key()
@@ -30,50 +33,53 @@ class DJFernet:
         encMessage = f.encrypt(rawFileData)
         fileHash = hashlib.sha1(encMessage)
         self.hashString = fileHashString = fileHash.hexdigest()
-        encDataFP = open(str(self.filename + self.suffix), 'wb')
+        encDataFP = open(str('./results/' + self.filename + self.suffix), 'wb')
         encDataFP.write(encMessage)
         encDataFP.flush()
         encDataFP.close()
-        keyFP = open('{}-key'.format(fileHashString), 'wb')
+        keyFP = open('./results/' + '{}-key'.format(fileHashString), 'wb')
         keyFP.write(key)
         keyFP.flush()
         keyFP.close()
         self.key = key
         self.encryptionTime = time.time() - encryptionStartTime
-        self.encryptedSize = str(os.path.getsize(str(self.filename + self.suffix)))
+        self.encryptedSize = str(os.path.getsize(str('./results/' + self.filename + self.suffix)))
     
     def decrypt(self):
         decryptionStartTime = time.time()
-        decryptFP = open(self.filename, 'rb')
+        decryptFP = open('./results/' + self.filename, 'rb')
         toDecrypt = decryptFP.read()
         decryptFP.close()
-        with open(str(hashlib.sha1(toDecrypt).hexdigest()) + '-key', 'rb') as f_in:
+        with open(str('./results/' + hashlib.sha1(toDecrypt).hexdigest()) + '-key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)
-        with open(str(self.filename + '.decrypted'), 'wb') as f_out: #ERROR filename changes
+        with open(str('./results/' + self.filename + '.decrypted'), 'wb') as f_out: #ERROR filename changes
             decryptedData = (decryptKey.decrypt(toDecrypt))
             f_out.write(decryptedData)
             f_out.close()
         self.decryptionTime = time.time() - decryptionStartTime
-        self.decryptedSize = str(os.path.getsize(self.filename))
+        self.decryptedSize = str(os.path.getsize('./results/' + self.filename))
 
 class NaCl:
     def __init__(self, filename, key = ''):
-        self.filesize = os.path.getsize(filename)
         self.type = 'NaCl'
-        self.filename = filename
         self.encryptionTime = 0
         self.decryptionTime = 0
         self.decryptedSize = 0
         self.encryptedSize = 0
-        # self.hashString = ''
         self.suffix = '.nacl'
         if key == '':
             self.key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
         else:
             self.key = key
         self.safe = nacl.secret.SecretBox(self.key)
+        self.filename = ''
+        if self.filename.find('results') > -1:
+            self.filename = filename[(filename.find('results/') + 8):]
+        else:
+            self.filename = filename
+        self.filesize = os.path.getsize(self.filename)
 
     def encrypt(self):
         encryptionStartTime = time.time()
