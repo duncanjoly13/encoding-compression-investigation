@@ -10,7 +10,6 @@ from cryptography.fernet import Fernet
 class DJFernet:
     def __init__(self, data):
         self.key = ''
-        self.hashString = ''
         self.type = 'Fernet'
         self.suffix = '.frnt'
         self.data = data
@@ -19,8 +18,7 @@ class DJFernet:
         key = Fernet.generate_key()
         f = Fernet(key)
         encMessage = f.encrypt(self.data)
-        fileHash = hashlib.sha1(encMessage)
-        self.hashString = fileHashString = fileHash.hexdigest()
+        fileHashString = hashlib.sha1(encMessage).hexdigest()
         keyFP = open('./keys/' + '{}-key'.format(fileHashString), 'wb')
         keyFP.write(key)
         keyFP.flush()
@@ -29,14 +27,15 @@ class DJFernet:
         return encMessage
     
     def decrypt(self):
-        with open(KEYFILE, 'rb') as f_in:
+        fileHashString = hashlib.sha1(str.encode(self.data)).hexdigest()
+        with open('./keys/' + fileHashString + '-key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)
         return decryptKey.decrypt(self.data)
 
 if __name__ == '__main__':
-    '''initial = DJFernet('2000-word-text.txt')
+    initial = DJFernet('2000-word-text.txt')
     encrypted = initial.encrypt()
     toDecrypt = DJFernet('2000-word-text.txt.frnt')
-    decrypted = toDecrypt.decrypt()'''
+    decrypted = toDecrypt.decrypt()
