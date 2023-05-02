@@ -38,17 +38,17 @@ class Test:
                 encObj = encMethod(compObj)
                 encObj.encrypt()
 
-                with open(filename + compObj.suffix + encObj.suffix, 'wb') as compEncOut:
+                with open(self.resultsFolder + filename + compObj.suffix + encObj.suffix, 'wb') as compEncOut:
                     compEncOut.write(compObj)
                     compEncOut.flush()
                     compEncOut.close()
 
-                deencObj = encMethod(filename + compObj.suffix + encObj.suffix)
+                deencObj = encMethod(self.resultsFolder + filename + compObj.suffix + encObj.suffix)
                 deencObj.decrypt()
                 decompObj = compMethod(deencObj)
                 decompObj.decompress()
                 
-                with open(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed', 'wb') as finalObj:
+                with open(self.resultsFolder + filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed', 'wb') as finalObj:
                     finalObj.write(decompObj)
                     finalObj.flush()
                     finalObj.close()
@@ -62,20 +62,20 @@ class Test:
             encObj = encMethod(filename)
             encObj.encrypt()
             for compMethod in self.compressionMethods:
-                compObj = compMethod(filename + encObj.suffix)
+                compObj = compMethod(encObj)
                 compObj.compress()
                 
-                with open(filename + encObj.suffix + compObj.suffix, 'wb') as encCompOut:
+                with open(self.resultsFolder + filename + encObj.suffix + compObj.suffix, 'wb') as encCompOut:
                     encCompOut.write()
                     encCompOut.flush()
                     encCompOut.close()
 
-                decompObj = encMethod(filename + compObj.suffix + encObj.suffix)
+                decompObj = encMethod(self.resultsFolder + filename + compObj.suffix + encObj.suffix)
                 decompObj.decompress()
                 deencObj = encMethod(decompObj)
                 deencObj.decrypt()
 
-                with open(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted', 'wb') as finalObj:
+                with open(self.resultsFolder + filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted', 'wb') as finalObj:
                     finalObj.write(deencObj)
                     finalObj.flush()
                     finalObj.close()
