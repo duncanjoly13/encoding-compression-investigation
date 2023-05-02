@@ -1,12 +1,14 @@
+#TODO add write and read time
+#TODO only write completed files (enc.comp or comp.enc)
 #TODO implement output folder, excess file deletion after test is run
 #TODO fix source file size
 
-import djcomp, djenc, time, os
+import djcomp_MEMORY, djenc_MEMORY, time, os
 
 class Test:
     def __init__(self, filename):
-        self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
-        self.encryptionMethods = [djenc.DJFernet]
+        self.compressionMethods = [djcomp_MEMORY.Bzip, djcomp_MEMORY.Gzip, djcomp_MEMORY.Zip]
+        self.encryptionMethods = [djenc_MEMORY.DJFernet]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
@@ -21,38 +23,63 @@ class Test:
                 newFile.close()
                 sourceFile.close()
         self.basefilename = self.resultsFolder + self.basefilename
-        '''else:
-            print(resultsFolder, 'exists!')
-            self.basefilename = '''''
 
     def run(self):
         self.compressionFirst(self.basefilename)
         self.encryptionFirst(self.basefilename)
 
     def compressionFirst(self, filename):
+        #TODO take timings
+        #TODO take sizings
         for compMethod in self.compressionMethods:
             compObj = compMethod(filename)
             compObj.compress()
             for encMethod in self.encryptionMethods:
-                encObj = encMethod(filename + compObj.suffix)
+                encObj = encMethod(compObj)
                 encObj.encrypt()
+
+                with open(filename + compObj.suffix + encObj.suffix, 'wb') as compEncOut:
+                    compEncOut.write(compObj)
+                    compEncOut.flush()
+                    compEncOut.close()
+
                 deencObj = encMethod(filename + compObj.suffix + encObj.suffix)
                 deencObj.decrypt()
-                decompObj = compMethod(filename + compObj.suffix + encObj.suffix + '.decrypted')
+                decompObj = compMethod(deencObj)
                 decompObj.decompress()
+                
+                with open(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed', 'wb') as finalObj:
+                    finalObj.write(decompObj)
+                    finalObj.flush()
+                    finalObj.close()
+
                 self.results.addData(str((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(deencObj.decryptionTime) + '\n')))
 
     def encryptionFirst(self, filename):
+        #TODO take timings
+        #TODO take sizings
         for encMethod in self.encryptionMethods:
             encObj = encMethod(filename)
             encObj.encrypt()
             for compMethod in self.compressionMethods:
                 compObj = compMethod(filename + encObj.suffix)
                 compObj.compress()
-                decompObj = compMethod(str(filename + encObj.suffix + compObj.suffix))
+                
+                with open(filename + encObj.suffix + compObj.suffix, 'wb') as encCompOut:
+                    encCompOut.write()
+                    encCompOut.flush()
+                    encCompOut.close()
+
+                decompObj = encMethod(filename + compObj.suffix + encObj.suffix)
                 decompObj.decompress()
-                deencObj = encMethod(filename + encObj.suffix +  decompObj.suffix + '.decompressed')
+                deencObj = encMethod(decompObj)
                 deencObj.decrypt()
+
+                with open(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted', 'wb') as finalObj:
+                    finalObj.write(deencObj)
+                    finalObj.flush()
+                    finalObj.close()
+
                 self.results.addData((filename + ',') + (str(compObj.filesize) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encObj.encryptionTime) + ',') + (str(compObj.compressionTime) + ',') + (str(encObj.encryptedSize) + ',') + (str(compObj.compressedSize) + ',') + (str(decompObj.decompressionTime) + ',') + (str(deencObj.decryptionTime) + '\n'))
 
 class Sheet:
