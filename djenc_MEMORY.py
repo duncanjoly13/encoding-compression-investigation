@@ -4,7 +4,7 @@
 #TODO fix extra \n
 #TODO implement NaCl, AES or RSA
 
-import os, hashlib, time, nacl.secret, nacl.utils
+import os, hashlib, nacl.secret, nacl.utils
 from cryptography.fernet import Fernet
 
 class DJFernet:
@@ -15,15 +15,14 @@ class DJFernet:
         self.data = data
         
     def encrypt(self):
-        key = Fernet.generate_key()
-        f = Fernet(key)
+        self.key = Fernet.generate_key()
+        f = Fernet(self.key)
         encMessage = f.encrypt(self.data)
         fileHashString = hashlib.sha1(encMessage).hexdigest()
-        keyFP = open('./keys/' + '{}-key'.format(fileHashString), 'wb')
-        keyFP.write(key)
-        keyFP.flush()
-        keyFP.close()
-        self.key = key
+        with open('./keys/' + '{}-key'.format(fileHashString), 'wb') as keyFP:
+            keyFP.write(self.key)
+            keyFP.flush()
+            keyFP.close()
         return encMessage
     
     def decrypt(self):
