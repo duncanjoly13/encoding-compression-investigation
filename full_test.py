@@ -3,12 +3,12 @@
 #TODO implement output folder, excess file deletion after test is run
 #TODO fix source file size
 
-import djcomp_MEMORY, djenc_MEMORY, time, os
+import djcomp, djenc, time, os
 
 class Test:
     def __init__(self, filename):
-        self.compressionMethods = [djcomp_MEMORY.Bzip, djcomp_MEMORY.Gzip, djcomp_MEMORY.Zip]
-        self.encryptionMethods = [djenc_MEMORY.DJFernet]
+        self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
+        self.encryptionMethods = [djenc.DJFernet]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
