@@ -1,6 +1,3 @@
-#TODO FIX KEYS
-#TODO fix UnicodeDecodeError
-#TODO implement output folder
 #TODO implement NaCl, AES or RSA
 
 import os, hashlib, nacl.secret, nacl.utils

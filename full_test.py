@@ -1,6 +1,3 @@
-#TODO fix times
-#TODO implement output folder, excess file deletion after test is run
-#TODO fix source file size
 #TODO add FileExists and FileNotFound error handing
 
 import djcomp, djenc, time, os, shutil
