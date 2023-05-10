@@ -1,6 +1,3 @@
-#TODO add FileExists and FileNotFound error handing
-#TODO fix having extra \n
-
 # Import modules
 import gzip, bz2, zipfile, io
 
@@ -11,8 +8,9 @@ class Gzip:
         self.suffix = '.gz'
 
     def compress(self):
-        binaryData = str.encode(self.data)
-        return gzip.compress(binaryData)
+        if type(self.data) != bytes:
+            self.data = str.encode(self.data)
+        return gzip.compress(self.data)
 
     def decompress(self):
         return gzip.decompress(self.data)
@@ -24,9 +22,13 @@ class Bzip:
         self.data = data
 
     def compress(self):
-        binaryData = str.encode(self.data)
-        return bz2.compress(binaryData)
+        if type(self.data) != bytes:
+            self.data = str.encode(self.data)
+        return bz2.compress(self.data)
+    
     def decompress(self):
+        if type(self.data) != bytes:
+            self.data = str.encode(self.data)
         return bz2.decompress(self.data)
 
 class Zip:
@@ -69,3 +71,18 @@ if __name__ == '__main__':
     with open('zip-complete.txt', 'wb') as output:
         output.write(unzipped)
         output.close()
+
+if __name__ == '__main__':
+    # Test Bzip
+    with open('2000-word-text.txt') as file:
+        testBzip = Bzip(file.read())
+        with open('compressed.out', 'wb') as compressed:
+            compressed.write(testBzip.compress())
+            compressed.close()
+        file.close()
+    with open('compressed.out', 'rb') as toDecompress:
+        toDecompressBzip = Bzip(toDecompress.read())
+        with open('finished.out', 'w') as finalFile:
+            finalFile.write(toDecompressBzip.decompress().decode())
+            finalFile.close()
+        toDecompress.close()
