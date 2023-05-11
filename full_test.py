@@ -1,5 +1,3 @@
-#TODO add FileExists and FileNotFound error handing
-
 import djcomp, djenc, time, os, shutil
 
 class Test:
@@ -11,16 +9,28 @@ class Test:
         self.keysFolder = r'./keys/'
         self.basefilename = filename
 
-        os.makedirs(self.resultsFolder)
-        os.makedirs(self.keysFolder)
-        with open(filename) as sourceFile:
-            with open(str(self.resultsFolder + filename), 'w') as newFile:
-                newFile.write(sourceFile.read())
-                newFile.flush()
-                newFile.close()
-                sourceFile.close()
-        self.basefilename = self.resultsFolder + self.basefilename
+        if os.path.exists(self.resultsFolder):
+            print("%s exists!" % self.resultsFolder)
+        else:
+            os.makedirs(self.resultsFolder)
 
+        if os.path.exists(self.keysFolder):
+            print("%s exists!" % self.keysFolder)
+        else:
+            os.makedirs(self.keysFolder)
+
+        if os.path.exists(filename):
+            with open(filename) as sourceFile:
+                with open(str(self.resultsFolder + filename), 'w') as newFile:
+                    newFile.write(sourceFile.read())
+                    newFile.flush()
+                    newFile.close()
+                    sourceFile.close()
+        else: 
+            print("%s does not exist!" % filename)
+            
+        self.basefilename = self.resultsFolder + self.basefilename
+            
     def run(self):
         self.compressionFirst(self.basefilename)
         self.encryptionFirst(self.basefilename)

@@ -73,7 +73,7 @@ if __name__ == '__main__':
         output.close()
 
 if __name__ == '__main__':
-    # Test Bzip
+    '''# Test Bzip
     with open('2000-word-text.txt') as file:
         testBzip = Bzip(file.read())
         with open('compressed.out', 'wb') as compressed:
@@ -85,4 +85,4 @@ if __name__ == '__main__':
         with open('finished.out', 'w') as finalFile:
             finalFile.write(toDecompressBzip.decompress().decode())
             finalFile.close()
-        toDecompress.close()
+        toDecompress.close()'''
