@@ -1,6 +1,3 @@
-#TODO fix NaCl UnicodeDecodeError
-#TODO implement AES or RSA
-
 import os, hashlib, nacl.secret, nacl.utils
 from cryptography.fernet import Fernet
 

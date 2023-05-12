@@ -1,3 +1,7 @@
+#TODO allow for list of files
+#TODO fix NaCl UnicodeDecodeError
+#TODO implement AES or RSA
+
 import djcomp, djenc, time, os, shutil
 
 class Test:
@@ -34,6 +38,8 @@ class Test:
     def run(self):
         self.compressionFirst(self.basefilename)
         self.encryptionFirst(self.basefilename)
+
+        return self.results.filename
 
     def compressionFirst(self, filename):
         with open(filename) as file:
@@ -123,8 +129,7 @@ class Test:
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.header = 'source file, source file size (b), encryption algorithm, compression algorithm, order, encryption time (s), compression time (s), encrypted and compressed file size (b), \
-                                decompression time (s), decryption time (s), total time (s)\n'
+        self.header = 'source file,source file size (b),encryption algorithm,compression algorithm,order,encryption time (s),compression time (s),encrypted and compressed file size (b),decompression time (s),decryption time (s),total time (s)\n'
         file = open(self.filename, 'w')
         file.write(self.header)
         file.close()
