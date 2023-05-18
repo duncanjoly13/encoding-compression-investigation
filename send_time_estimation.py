@@ -1,15 +1,19 @@
-#TODO add new columns to csv
+def get_time(filesize, network_speed):
+    return ((filesize * 8) / network_speed) / 1000
 
-import pandas
-# import full_test
+def edit(filename):
+    newData = ''
+    with open(filename) as file:
+        newData += file.readline()[:-1] + ',estimated network time @ 1Mbps (s),estimated network time @ 5Mbps (s),estimated network time @ 10Mbps (s)\n'
+        data = file.readlines()
+        for line in data:
+            speed = int(line.split(',')[7])
+            newData += line[:-1] + ',' + str(get_time(speed, 1)) + ',' + str(get_time(speed, 5)) + ',' + str(get_time(speed, 10)) + '\n'
+        file.close()
+    print(newData)
 
-def compute(filesize, network_speed):
-    return (filesize * 8) / network_speed
+    with open(filename, 'w') as newFile:
+        newFile.write(newData[:-1])
+        newFile.close()
 
-'''test = full_test.Test('2000-word-text.txt')
-df = pandas.read_csv(test.run())'''
-
-'''df = pandas.read_csv('2023-05-12--11-13-results.csv')
-saved_column = df['encrypted and compressed file size (b)']
-'''
-pandas.concat([pandas.read_csv('2023-05-12--11-13-results.csv'), pandas.DataFrame('estimated network time (10Mbps)', 'estimated network time (5Mbps)', 'estimated network time (1Mbps)')]).to_csv('output.csv', header=True, index=False)
+edit('2023-05-17--22-45-results.csv')
