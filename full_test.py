@@ -1,4 +1,7 @@
-#TODO add FileExists and FileNotFound error handing
+#TODO handle existing results file - throw error and require that file is deleted first
+#TODO allow for list of files
+#TODO fix NaCl UnicodeDecodeError
+#TODO implement AES or RSA
 
 import djcomp, djenc, time, os, shutil
 
@@ -11,19 +14,33 @@ class Test:
         self.keysFolder = r'./keys/'
         self.basefilename = filename
 
-        os.makedirs(self.resultsFolder)
-        os.makedirs(self.keysFolder)
-        with open(filename) as sourceFile:
-            with open(str(self.resultsFolder + filename), 'w') as newFile:
-                newFile.write(sourceFile.read())
-                newFile.flush()
-                newFile.close()
-                sourceFile.close()
-        self.basefilename = self.resultsFolder + self.basefilename
+        if os.path.exists(self.resultsFolder):
+            print("%s exists!" % self.resultsFolder)
+        else:
+            os.makedirs(self.resultsFolder)
 
+        if os.path.exists(self.keysFolder):
+            print("%s exists!" % self.keysFolder)
+        else:
+            os.makedirs(self.keysFolder)
+
+        if os.path.exists(filename):
+            with open(filename) as sourceFile:
+                with open(str(self.resultsFolder + filename), 'w') as newFile:
+                    newFile.write(sourceFile.read())
+                    newFile.flush()
+                    newFile.close()
+                    sourceFile.close()
+        else: 
+            print("%s does not exist!" % filename)
+            
+        self.basefilename = self.resultsFolder + self.basefilename
+            
     def run(self):
         self.compressionFirst(self.basefilename)
         self.encryptionFirst(self.basefilename)
+
+        return self.results.filename
 
     def compressionFirst(self, filename):
         with open(filename) as file:
@@ -32,28 +49,28 @@ class Test:
                 for encMethod in self.encryptionMethods:
                     compressionStartTime = time.time()
                     encObj = encMethod(compObj.compress())
-                    compressionTime = time.time() - compressionStartTime
+                    compressionTime = (time.time() - compressionStartTime) * 1000 
 
                     encryptionStartTime = time.time()
                     with open(filename + compObj.suffix + encObj.suffix, 'wb') as compEncOut:
                         compEncOut.write(encObj.encrypt())
                         compEncOut.flush()
                         compEncOut.close()
-                    encryptionAndWriteTime = time.time() - encryptionStartTime
+                    encryptionAndWriteTime = (time.time() - encryptionStartTime) * 1000
 
                     decryptionStartTime = time.time()
                     with open(filename + compObj.suffix + encObj.suffix) as deencFile:
                         deencObj = encMethod(deencFile.read())
                         decompObj = compMethod(deencObj.decrypt())
                         deencFile.close()
-                        decryptionTime = time.time() - decryptionStartTime
+                        decryptionTime = (time.time() - decryptionStartTime) * 1000
 
                         decompressionStartTime = time.time()
                         with open(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed', 'wb') as finalObj:
                             finalObj.write(decompObj.decompress())
                             finalObj.flush()
                             finalObj.close()
-                            decompressionAndWriteTime = time.time() - decompressionStartTime
+                            decompressionAndWriteTime = (time.time() - decompressionStartTime) * 1000
 
                             self.results.addData((filename + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionAndWriteTime) + ',') + 
                                                  (str(compressionTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionAndWriteTime) + ',') + 
@@ -67,27 +84,27 @@ class Test:
                 for compMethod in self.compressionMethods:
                     encryptionStartTime = time.time()
                     compObj = compMethod(encObj.encrypt())
-                    encryptionTime = time.time() - encryptionStartTime
+                    encryptionTime = (time.time() - encryptionStartTime) * 1000
                     
                     compressionStartTime = time.time()
                     with open(filename + encObj.suffix + compObj.suffix, 'wb') as encCompOut:
                         encCompOut.write(compObj.compress())
                         encCompOut.flush()
                         encCompOut.close()
-                    compressionAndWriteTime = time.time() - compressionStartTime
+                    compressionAndWriteTime = (time.time() - compressionStartTime) * 1000
 
                     decompressionStartTime = time.time()
                     with open(filename + encObj.suffix + compObj.suffix, 'rb') as decompFile:
                         decompObj = compMethod(decompFile.read())
                         deencObj = encMethod(decompObj.decompress())
-                        decompressionTime = time.time() - decompressionStartTime
+                        decompressionTime = (time.time() - decompressionStartTime) * 1000
 
                         decryptionStartTime = time.time()
                         with open(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted', 'wb') as finalObj:
                             finalObj.write(deencObj.decrypt())
                             finalObj.flush()
                             finalObj.close()
-                            decryptionAndWriteTime = time.time() - decryptionStartTime
+                            decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
 
                         self.results.addData((filename + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
                                              (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionTime) + ',') + 
@@ -113,8 +130,7 @@ class Test:
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.header = 'source file, source file size (b), encryption algorithm, compression algorithm, order, encryption time (s), compression time (s), encrypted and compressed file size (b), \
-                                decompression time (s), decryption time (s), total time (s)\n'
+        self.header = 'source file,source file size (b),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (b),decompression time (ms),decryption time (ms),total time (ms)\n'
         file = open(self.filename, 'w')
         file.write(self.header)
         file.close()
