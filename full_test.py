@@ -1,5 +1,4 @@
 #TODO handle existing results file - throw error and require that file is deleted first
-#TODO allow for list of files
 #TODO fix NaCl UnicodeDecodeError
 #TODO implement AES or RSA
 
