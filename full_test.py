@@ -1,3 +1,5 @@
+#TODO investigate filesizes - seem incorrect
+#TODO detect invalid files in filelist
 #TODO handle existing results file - throw error and require that file is deleted first
 #TODO fix NaCl UnicodeDecodeError
 #TODO implement AES or RSA
@@ -123,7 +125,7 @@ class Test:
                             finalObj.close()
                             decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
 
-                        self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
+                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
                                              (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionTime) + ',') + 
                                              (str(decryptionAndWriteTime) + ',') + (str(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime)) + '\n')
         file.close()
@@ -142,5 +144,6 @@ class Sheet:
         file.close()
 
 if __name__ == '__main__':
-    test = Test('2000-word-text.txt', '10-5_mb.pdf')
+    #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
+    test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt')
     test.run()
