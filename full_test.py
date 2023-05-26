@@ -1,8 +1,9 @@
 #TODO investigate filesizes - seem incorrect
+#TODO fix NaCl UnicodeDecodeError
+#TODO implement asymmetric key encryption
+#TODO implement lossy compression algorithm
 #TODO detect invalid files in filelist
 #TODO handle existing results file - throw error and require that file is deleted first
-#TODO fix NaCl UnicodeDecodeError
-#TODO implement AES or RSA
 
 import djcomp, djenc, time, os, shutil
 
