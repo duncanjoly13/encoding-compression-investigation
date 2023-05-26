@@ -1,4 +1,3 @@
-# Import modules
 import gzip, bz2, zipfile, io
 
 class Gzip:
