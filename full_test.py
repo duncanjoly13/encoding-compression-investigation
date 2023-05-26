@@ -6,13 +6,13 @@
 import djcomp, djenc, time, os, shutil
 
 class Test:
-    def __init__(self, filename):
+    def __init__(self, *filenames):
         self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
         self.encryptionMethods = [djenc.DJFernet]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
-        self.basefilename = filename
+        self.basefilenames = list(filenames)
 
         if os.path.exists(self.resultsFolder):
             print("%s exists!" % self.resultsFolder)
@@ -24,26 +24,44 @@ class Test:
         else:
             os.makedirs(self.keysFolder)
 
-        if os.path.exists(filename):
-            with open(filename) as sourceFile:
-                with open(str(self.resultsFolder + filename), 'w') as newFile:
-                    newFile.write(sourceFile.read())
-                    newFile.flush()
-                    newFile.close()
-                    sourceFile.close()
-        else: 
-            print("%s does not exist!" % filename)
-            
-        self.basefilename = self.resultsFolder + self.basefilename
+        for filename in filenames:
+            if os.path.exists(filename):
+                with open(filename, 'rb') as sourceFile:
+                    with open(str(self.resultsFolder + filename), 'wb') as newFile:
+                        newFile.write(sourceFile.read())
+                        newFile.flush()
+                        newFile.close()
+                        sourceFile.close()
+            else: 
+                print("%s does not exist!" % filename)
+
+        self.basefilenames = []
+
+        for filename in filenames:
+            self.basefilenames.append(self.resultsFolder + filename)
             
     def run(self):
-        self.compressionFirst(self.basefilename)
-        self.encryptionFirst(self.basefilename)
+        for filename in self.basefilenames:
+            self.compressionFirst(filename)
+            self.encryptionFirst(filename)
 
-        return self.results.filename
+        if os.path.isdir(self.resultsFolder):
+            shutil.rmtree(self.resultsFolder)
+        else:
+            print("Error: %s file not found" % self.resultsFolder)
+
+        if os.path.isdir(self.keysFolder):
+            shutil.rmtree(self.keysFolder)
+        else:
+            print("Error: %s file not found" % self.keysFolder)
+
+        if os.path.isdir('__pycache__'):
+            shutil.rmtree('__pycache__')
+        else:
+            print("No pycache folder, not deleting")
 
     def compressionFirst(self, filename):
-        with open(filename) as file:
+        with open(filename, 'rb') as file:
             for compMethod in self.compressionMethods:
                 compObj = compMethod(file.read())
                 for encMethod in self.encryptionMethods:
@@ -72,13 +90,13 @@ class Test:
                             finalObj.close()
                             decompressionAndWriteTime = (time.time() - decompressionStartTime) * 1000
 
-                            self.results.addData((filename + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionAndWriteTime) + ',') + 
+                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionAndWriteTime) + ',') + 
                                                  (str(compressionTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionAndWriteTime) + ',') + 
                                                  (str(decryptionTime) + ',') + (str(encryptionAndWriteTime + decryptionTime + compressionTime + decompressionAndWriteTime)) + '\n')
         file.close()
 
     def encryptionFirst(self, filename):
-        with open(filename) as file:
+        with open(filename, 'rb') as file:
             for encMethod in self.encryptionMethods:
                 encObj = encMethod(file.read())
                 for compMethod in self.compressionMethods:
@@ -106,26 +124,10 @@ class Test:
                             finalObj.close()
                             decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
 
-                        self.results.addData((filename + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
+                        self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
                                              (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionTime) + ',') + 
                                              (str(decryptionAndWriteTime) + ',') + (str(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime)) + '\n')
         file.close()
-
-        if os.path.isdir(self.resultsFolder):
-            shutil.rmtree(self.resultsFolder)
-        else:
-            print("Error: %s file not found" % self.resultsFolder)
-
-        if os.path.isdir(self.keysFolder):
-            shutil.rmtree(self.keysFolder)
-        else:
-            print("Error: %s file not found" % self.keysFolder)
-
-        if os.path.isdir('__pycache__'):
-            shutil.rmtree('__pycache__')
-        else:
-            print("No pycache folder, not deleting")
-
 
 class Sheet:
     def __init__(self):
@@ -141,5 +143,5 @@ class Sheet:
         file.close()
 
 if __name__ == '__main__':
-    test = Test('2000-word-text.txt')
+    test = Test('2000-word-text.txt', '10-5_mb.pdf')
     test.run()
