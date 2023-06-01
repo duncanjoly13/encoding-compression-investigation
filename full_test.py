@@ -1,7 +1,14 @@
-#TODO investigate filesizes - seem incorrect
-#TODO fix NaCl UnicodeDecodeError
+#TODO fix compression first files - empty
+#TODO fix incomplete data being written and processed
+#TODO investigate filesizes and certain timings - seem incorrect
+#TODO add compression ratio to csv in post processing script
+#TODO add only compresion and only encryption cases (none cases)
+#TODO graphs
+#TODO broad narrative
+#TODO fix NaCl UnicodeDecodeError or decide on other method
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
+#TODO more file types and sizes
 #TODO detect invalid files in filelist
 #TODO handle existing results file - throw error and require that file is deleted first
 
@@ -64,6 +71,9 @@ class Test:
 
     def compressionFirst(self, filename):
         with open(filename, 'rb') as file:
+            ### FOR TESTING ONLY
+            print(filename, ":", file.read())
+            ###
             for compMethod in self.compressionMethods:
                 compObj = compMethod(file.read())
                 for encMethod in self.encryptionMethods:
@@ -93,9 +103,9 @@ class Test:
                             decompressionAndWriteTime = (time.time() - decompressionStartTime) * 1000
 
                             self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionAndWriteTime) + ',') + 
-                                                 (str(compressionTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionAndWriteTime) + ',') + 
+                                                 (str(compressionTime) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str(decompressionAndWriteTime) + ',') + 
                                                  (str(decryptionTime) + ',') + (str(encryptionAndWriteTime + decryptionTime + compressionTime + decompressionAndWriteTime)) + '\n')
-        file.close()
+            file.close()
 
     def encryptionFirst(self, filename):
         with open(filename, 'rb') as file:
@@ -127,14 +137,14 @@ class Test:
                             decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
 
                             self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
-                                             (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(filename + compObj.suffix + encObj.suffix)) + ',') + (str(decompressionTime) + ',') + 
+                                             (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str(decompressionTime) + ',') + 
                                              (str(decryptionAndWriteTime) + ',') + (str(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime)) + '\n')
-        file.close()
+            file.close()
 
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.header = 'source file,source file size (b),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (b),decompression time (ms),decryption time (ms),total time (ms)\n'
+        self.header = 'source file,source file size (b),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (b),decompression time (ms),decryption time (ms),total operation time (ms)\n'
         file = open(self.filename, 'w')
         file.write(self.header)
         file.close()
