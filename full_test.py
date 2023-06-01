@@ -72,7 +72,8 @@ class Test:
     def compressionFirst(self, filename):
         with open(filename, 'rb') as file:
             ### FOR TESTING ONLY
-            print(filename, ":", file.read())
+            data = file.read()
+            print(filename, ":", data)
             ###
             for compMethod in self.compressionMethods:
                 compObj = compMethod(file.read())
