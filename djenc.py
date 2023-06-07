@@ -61,16 +61,22 @@ class NaCl:
         return decMessage
 
 if __name__ == '__main__':
-    # Test NaCl
-    with open('2000-word-text.txt') as file:
-        testNaCl = NaCl(file.read())
-        with open('encrypted.out', 'wb') as encrypted:
-            encrypted.write(testNaCl.encrypt())
-            encrypted.close()
+    if os.path.exists(r'./keys/'):
+        print('./keys/ exists!')
+    else:
+        os.makedirs(r'./keys/')
+
+    # test DJFernet
+    with open('10_mb.pdf', 'rb') as file:
+        testFernet = DJFernet(file.read())
         file.close()
-    with open('encrypted.out', 'rb') as toDecrypt:
-        toDecryptNaCl = NaCl(toDecrypt.read())
-        with open('finished.out', 'w') as finalFile:
-            finalFile.write(toDecryptNaCl.decrypt().decode())
+        with open('Fernet-encrypted.pdf', 'wb') as encrypted:
+            encrypted.write(testFernet.encrypt())
+            encrypted.close()
+    with open('Fernet-encrypted.pdf', 'rb') as toDecryptFile:
+        toDecryptFernet = DJFernet(toDecryptFile.read())
+        toDecryptFile.close()
+        with open('Fernet-completed.pdf', 'wb') as finalFile:
+            decryptedData = toDecryptFernet.decrypt()
+            finalFile.write(decryptedData)
             finalFile.close()
-        toDecrypt.close()

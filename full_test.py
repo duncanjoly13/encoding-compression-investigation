@@ -54,10 +54,10 @@ class Test:
             self.compressionFirst(filename)
             self.encryptionFirst(filename)
 
-        if os.path.isdir(self.resultsFolder):
+        '''if os.path.isdir(self.resultsFolder):
             shutil.rmtree(self.resultsFolder)
         else:
-            print("Error: %s file not found" % self.resultsFolder)
+            print("Error: %s file not found" % self.resultsFolder)'''
 
         if os.path.isdir(self.keysFolder):
             shutil.rmtree(self.keysFolder)
@@ -71,10 +71,6 @@ class Test:
 
     def compressionFirst(self, filename):
         with open(filename, 'rb') as file:
-            ### FOR TESTING ONLY
-            data = file.read()
-            print(filename, ":", data)
-            ###
             for compMethod in self.compressionMethods:
                 compObj = compMethod(file.read())
                 for encMethod in self.encryptionMethods:
@@ -92,8 +88,8 @@ class Test:
                     decryptionStartTime = time.time()
                     with open(filename + compObj.suffix + encObj.suffix) as deencFile:
                         deencObj = encMethod(deencFile.read())
-                        decompObj = compMethod(deencObj.decrypt())
                         deencFile.close()
+                        decompObj = compMethod(deencObj.decrypt())
                         decryptionTime = (time.time() - decryptionStartTime) * 1000
 
                         decompressionStartTime = time.time()
@@ -102,6 +98,10 @@ class Test:
                             finalObj.flush()
                             finalObj.close()
                             decompressionAndWriteTime = (time.time() - decompressionStartTime) * 1000
+
+                            finalSize = os.path.getsize(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed')
+                            if finalSize != os.path.getsize(filename):
+                                print(filename, 'with', compObj.type, 'then', encObj.type + ': SIZE DIFFERS')
 
                             self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionAndWriteTime) + ',') + 
                                                  (str(compressionTime) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str(decompressionAndWriteTime) + ',') + 
@@ -127,6 +127,7 @@ class Test:
                     decompressionStartTime = time.time()
                     with open(filename + encObj.suffix + compObj.suffix, 'rb') as decompFile:
                         decompObj = compMethod(decompFile.read())
+                        decompFile.close()
                         deencObj = encMethod(decompObj.decompress())
                         decompressionTime = (time.time() - decompressionStartTime) * 1000
 
@@ -136,6 +137,10 @@ class Test:
                             finalObj.flush()
                             finalObj.close()
                             decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
+
+                            finalSize = os.path.getsize(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted')
+                            if finalSize != os.path.getsize(filename):
+                                print(filename, 'with', encObj.type, 'then', compObj.type + ': SIZE DIFFERS')
 
                             self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
                                              (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str(decompressionTime) + ',') + 
@@ -157,5 +162,5 @@ class Sheet:
 
 if __name__ == '__main__':
     #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
-    test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt')
+    test = Test('10_mb.pdf')
     test.run()

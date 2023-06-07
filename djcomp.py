@@ -51,37 +51,37 @@ class Zip:
         return file_buffer.read()
 
 if __name__ == '__main__':
-    testdata = open('2000-word-text.txt').read()
+    testdata = open('10_mb.pdf', 'rb').read()
     
+    # test Bzip
     bzipped = Bzip(testdata).compress()
-    unbzipped = Bzip(bzipped).decompress()
-    with open('bzip-complete.txt', 'wb') as output:
+    with open('bzip-compressed.pdf', 'wb') as output:
+        output.write(bzipped)
+        output.close()
+    toUnBzip = open('bzip-compressed.pdf', 'rb').read()
+    unbzipped = Bzip(toUnBzip).decompress()
+    with open('bzip-complete.pdf', 'wb') as output:
         output.write(unbzipped)
         output.close()
-    
+
+    # test Gzip
     gzipped = Gzip(testdata).compress()
-    ungzipped = Gzip(gzipped).decompress()
-    with open('gzip-complete.txt', 'wb') as output:
+    with open('gzip-compressed.pdf', 'wb') as output:
+        output.write(gzipped)
+        output.close()
+    toUnGzip = open('gzip-compressed.pdf', 'rb').read()
+    ungzipped = Gzip(toUnGzip).decompress()
+    with open('gzip-complete.pdf', 'wb') as output:
         output.write(ungzipped)
         output.close()
 
+    # test Zip
     zipped = Zip(testdata).compress()
-    unzipped = Zip(zipped).decompress()
-    with open('zip-complete.txt', 'wb') as output:
+    with open('zip-compressed.pdf', 'wb') as output:
+        output.write(zipped)
+        output.close()
+    toUnZip = open('zip-compressed.pdf', 'rb').read()
+    unzipped = Zip(toUnZip).decompress()
+    with open('zip-complete.pdf', 'wb') as output:
         output.write(unzipped)
         output.close()
-
-if __name__ == '__main__':
-    '''# Test Bzip
-    with open('2000-word-text.txt') as file:
-        testBzip = Bzip(file.read())
-        with open('compressed.out', 'wb') as compressed:
-            compressed.write(testBzip.compress())
-            compressed.close()
-        file.close()
-    with open('compressed.out', 'rb') as toDecompress:
-        toDecompressBzip = Bzip(toDecompress.read())
-        with open('finished.out', 'w') as finalFile:
-            finalFile.write(toDecompressBzip.decompress().decode())
-            finalFile.close()
-        toDecompress.close()'''
