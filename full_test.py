@@ -1,6 +1,7 @@
-#TODO fix summed times - move to postprocessing and add memory/write totals
+#TODO add intermediate memory sizes
 #TODO graphs
 #TODO broad narrative
+#TODO examine character of the file - file hashes
 #TODO fix NaCl UnicodeDecodeError or decide on other method
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
@@ -118,7 +119,7 @@ class Test:
 
                 self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
                                         (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                        (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',') + (str("{:.3f}".format(encryptionTime + decryptionTime + compressionTime + decompressionTime))) + '\n')
+                                        (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',')+ '\n')
 
     def encryptionFirst(self, filename):
         with open(filename, 'rb') as file:
@@ -173,15 +174,13 @@ class Test:
 
                 self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
                                     (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                    (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',') + (str("{:.3f}".format(encryptionTime + decryptionTime + compressionTime + decompressionTime))) + '\n')
+                                    (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',')+ '\n')
 
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.disclaimer = 'encryption and decompression times include write times when compression is first, compression and decryption times include write times when encryption is first\n'
-        self.header = 'source file,source file size (b),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (b),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),total time EXCLUDING read + write times (ms)\n'
+        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms)\n'
         file = open(self.filename, 'w')
-        file.write(self.disclaimer)
         file.write(self.header)
         file.close()
 
