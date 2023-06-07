@@ -5,12 +5,14 @@ def edit(filename):
     newData = ''
     try:
         with open(filename) as file:
-            newData += file.readline()[:-1] + ',compression ratio,estimated network time @ 1Mbps (s),estimated network time @ 5Mbps (s),estimated network time @ 10Mbps (s)\n'
-            data = file.readlines()
-            for line in data:
+            rawLines = file.readlines()
+            newData += rawLines[0]
+            newData += rawLines[1][:-1] + ',compression ratio,estimated network time @ 1Mbps (s),estimated network time @ 5Mbps (s),estimated network time @ 10Mbps (s)\n'
+            rawData = rawLines[2:]
+            for line in rawData:
                 originalSize = int(line.split(',')[1])
                 compressedSize = int(line.split(',')[7])
-                newData += line[:-1] + ',' + str("{:.3f}".format(originalSize / compressedSize)) + ',' + str(get_time(compressedSize, 1)) + ',' + str(get_time(compressedSize, 5)) + ',' + str(get_time(compressedSize, 10)) + '\n'
+                newData += line[:-1] + ',' + str("{:.3f}".format(originalSize / compressedSize)) + ',' + str("{:.3f}".format(get_time(compressedSize, 1))) + ',' + str("{:.3f}".format(get_time(compressedSize, 5))) + ',' + str("{:.3f}".format(get_time(compressedSize, 10))) + '\n'
             file.close()
 
         with open(filename[:-4] + '-PROCESSED.csv', 'w') as newFile:
@@ -20,4 +22,4 @@ def edit(filename):
         print("File '%s' does not exist" %filename)
 
 if __name__ == '__main__':
-    edit('2023-06-06--21-27-results.csv')
+    edit('FILENAME')

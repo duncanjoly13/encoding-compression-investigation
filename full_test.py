@@ -1,4 +1,6 @@
-#TODO fix Fernet-firsts and files ending with NoEnc or Fernet
+#TODO separate read times - initial and intermediate
+#TODO separate write times - intermediate and final
+#TODO fix summed times - move to postprocessing and add memory/write totals
 #TODO graphs
 #TODO broad narrative
 #TODO fix NaCl UnicodeDecodeError or decide on other method
@@ -67,87 +69,93 @@ class Test:
 
     def compressionFirst(self, filename):
         with open(filename, 'rb') as file:
-            for compMethod in self.compressionMethods:
-                compObj = compMethod(file.read())
-                for encMethod in self.encryptionMethods:
-                    compressionStartTime = time.time()
-                    encObj = encMethod(compObj.compress())
-                    compressionTime = (time.time() - compressionStartTime) * 1000 
-
-                    encryptionStartTime = time.time()
-                    with open(filename + compObj.suffix + encObj.suffix, 'wb') as compEncOut:
-                        compEncOut.write(encObj.encrypt())
-                        compEncOut.flush()
-                        compEncOut.close()
-                    encryptionAndWriteTime = (time.time() - encryptionStartTime) * 1000
-
-                    decryptionStartTime = time.time()
-                    with open(filename + compObj.suffix + encObj.suffix, 'rb') as deencFile:
-                        deencObj = encMethod(deencFile.read())
-                        deencFile.close()
-                        decompObj = compMethod(deencObj.decrypt())
-                        decryptionTime = (time.time() - decryptionStartTime) * 1000
-
-                        decompressionStartTime = time.time()
-                        with open(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed', 'wb') as finalObj:
-                            finalObj.write(decompObj.decompress())
-                            finalObj.flush()
-                            finalObj.close()
-                            decompressionAndWriteTime = (time.time() - decompressionStartTime) * 1000
-
-                            finalSize = os.path.getsize(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed')
-                            if finalSize != os.path.getsize(filename):
-                                print(filename, 'with', compObj.type, 'then', encObj.type + ': SIZE DIFFERS')
-
-                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.3f}".format(encryptionAndWriteTime)) + ',') + 
-                                                 (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.3f}".format(decompressionAndWriteTime)) + ',') + 
-                                                 (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(encryptionAndWriteTime + decryptionTime + compressionTime + decompressionAndWriteTime))) + '\n')
+            data = file.read()
             file.close()
+
+        for compMethod in self.compressionMethods:
+            compObj = compMethod(data)
+            for encMethod in self.encryptionMethods:
+                compressionStartTime = time.time()
+                encObj = encMethod(compObj.compress())
+                compressionTime = (time.time() - compressionStartTime) * 1000 
+
+                encryptionStartTime = time.time()
+                with open(filename + compObj.suffix + encObj.suffix, 'wb') as compEncOut:
+                    compEncOut.write(encObj.encrypt())
+                    compEncOut.flush()
+                    compEncOut.close()
+                encryptionAndWriteTime = (time.time() - encryptionStartTime) * 1000
+
+                decryptionStartTime = time.time()
+                with open(filename + compObj.suffix + encObj.suffix, 'rb') as deencFile:
+                    deencObj = encMethod(deencFile.read())
+                    deencFile.close()
+                    decompObj = compMethod(deencObj.decrypt())
+                    decryptionTime = (time.time() - decryptionStartTime) * 1000
+
+                    decompressionStartTime = time.time()
+                    with open(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed', 'wb') as finalObj:
+                        finalObj.write(decompObj.decompress())
+                        finalObj.flush()
+                        finalObj.close()
+                        decompressionAndWriteTime = (time.time() - decompressionStartTime) * 1000
+
+                        finalSize = os.path.getsize(filename + compObj.suffix + encObj.suffix + '.decrypted.decompressed')
+                        if finalSize != os.path.getsize(filename):
+                            print(filename, 'with', compObj.type, 'then', encObj.type + ': SIZE DIFFERS')
+
+                        self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.3f}".format(encryptionAndWriteTime)) + ',') + 
+                                                (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.3f}".format(decompressionAndWriteTime)) + ',') + 
+                                                (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(encryptionAndWriteTime + decryptionTime + compressionTime + decompressionAndWriteTime))) + '\n')
 
     def encryptionFirst(self, filename):
         with open(filename, 'rb') as file:
-            for encMethod in self.encryptionMethods:
-                encObj = encMethod(file.read())
-                for compMethod in self.compressionMethods:
-                    encryptionStartTime = time.time()
-                    compObj = compMethod(encObj.encrypt())
-                    encryptionTime = (time.time() - encryptionStartTime) * 1000
-                    
-                    compressionStartTime = time.time()
-                    with open(filename + encObj.suffix + compObj.suffix, 'wb') as encCompOut:
-                        encCompOut.write(compObj.compress())
-                        encCompOut.flush()
-                        encCompOut.close()
-                    compressionAndWriteTime = (time.time() - compressionStartTime) * 1000
-
-                    decompressionStartTime = time.time()
-                    with open(filename + encObj.suffix + compObj.suffix, 'rb') as decompFile:
-                        decompObj = compMethod(decompFile.read())
-                        decompFile.close()
-                        deencObj = encMethod(decompObj.decompress())
-                        decompressionTime = (time.time() - decompressionStartTime) * 1000
-
-                        decryptionStartTime = time.time()
-                        with open(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted', 'wb') as finalObj:
-                            finalObj.write(deencObj.decrypt())
-                            finalObj.flush()
-                            finalObj.close()
-                            decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
-
-                            finalSize = os.path.getsize(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted')
-                            if finalSize != os.path.getsize(filename):
-                                print(filename, 'with', encObj.type, 'then', compObj.type + ': SIZE DIFFERS')
-
-                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
-                                             (str("{:.3f}".format(compressionAndWriteTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                             (str("{:.3f}".format(decryptionAndWriteTime)) + ',') + (str("{:.3f}".format(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime))) + '\n')
+            data = file.read()
             file.close()
+
+        for encMethod in self.encryptionMethods:
+            encObj = encMethod(data)
+            for compMethod in self.compressionMethods:
+                encryptionStartTime = time.time()
+                compObj = compMethod(encObj.encrypt())
+                encryptionTime = (time.time() - encryptionStartTime) * 1000
+                
+                compressionStartTime = time.time()
+                with open(filename + encObj.suffix + compObj.suffix, 'wb') as encCompOut:
+                    encCompOut.write(compObj.compress())
+                    encCompOut.flush()
+                    encCompOut.close()
+                compressionAndWriteTime = (time.time() - compressionStartTime) * 1000
+
+                decompressionStartTime = time.time()
+                with open(filename + encObj.suffix + compObj.suffix, 'rb') as decompFile:
+                    decompObj = compMethod(decompFile.read())
+                    decompFile.close()
+                    deencObj = encMethod(decompObj.decompress())
+                    decompressionTime = (time.time() - decompressionStartTime) * 1000
+
+                    decryptionStartTime = time.time()
+                    with open(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted', 'wb') as finalObj:
+                        finalObj.write(deencObj.decrypt())
+                        finalObj.flush()
+                        finalObj.close()
+                        decryptionAndWriteTime = (time.time() - decryptionStartTime) * 1000
+
+                        finalSize = os.path.getsize(filename + encObj.suffix + compObj.suffix + '.decompressed.decrypted')
+                        if finalSize != os.path.getsize(filename):
+                            print(filename, 'with', encObj.type, 'then', compObj.type + ': SIZE DIFFERS')
+
+                        self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
+                                            (str("{:.3f}".format(compressionAndWriteTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
+                                            (str("{:.3f}".format(decryptionAndWriteTime)) + ',') + (str("{:.3f}".format(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime))) + '\n')
 
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
+        self.disclaimer = 'encryption and decompression times include write times when compression is first, compression and decryption times include write times when encryption is first\n'
         self.header = 'source file,source file size (b),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (b),decompression time (ms),decryption time (ms),total operation time (ms)\n'
         file = open(self.filename, 'w')
+        file.write(self.disclaimer)
         file.write(self.header)
         file.close()
 
