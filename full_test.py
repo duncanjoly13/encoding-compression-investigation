@@ -1,8 +1,4 @@
-#TODO fix compression first files - empty
-#TODO fix incomplete data being written and processed
-#TODO investigate filesizes and certain timings - seem incorrect
-#TODO add compression ratio to csv in post processing script
-#TODO add only compresion and only encryption cases (none cases)
+#TODO fix Fernet-firsts and files ending with NoEnc or Fernet
 #TODO graphs
 #TODO broad narrative
 #TODO fix NaCl UnicodeDecodeError or decide on other method
@@ -16,8 +12,8 @@ import djcomp, djenc, time, os, shutil
 
 class Test:
     def __init__(self, *filenames):
-        self.compressionMethods = [djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
-        self.encryptionMethods = [djenc.DJFernet]
+        self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
+        self.encryptionMethods = [djenc.NoEnc, djenc.DJFernet]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
@@ -86,7 +82,7 @@ class Test:
                     encryptionAndWriteTime = (time.time() - encryptionStartTime) * 1000
 
                     decryptionStartTime = time.time()
-                    with open(filename + compObj.suffix + encObj.suffix) as deencFile:
+                    with open(filename + compObj.suffix + encObj.suffix, 'rb') as deencFile:
                         deencObj = encMethod(deencFile.read())
                         deencFile.close()
                         decompObj = compMethod(deencObj.decrypt())

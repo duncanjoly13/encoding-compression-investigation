@@ -1,5 +1,23 @@
 import gzip, bz2, zipfile, io
 
+class NoZip:
+    def __init__(self, data):
+        self.data = data
+        self.type = 'noZip'
+        self.suffix = '.nozip'
+
+    def compress(self):
+        if type(self.data) != bytes:
+            return str.encode(self.data)
+        else:
+            return self.data
+    
+    def decompress(self):
+        if type(self.data) != bytes:
+            return str.encode(self.data)
+        else:
+            return self.data
+
 class Gzip:
     def __init__(self, data):
         self.data = data
@@ -52,6 +70,17 @@ class Zip:
 
 if __name__ == '__main__':
     testdata = open('10_mb.pdf', 'rb').read()
+
+    # test NoZip
+    nozipped = NoZip(testdata).compress()
+    with open('nozip-compressed.pdf', 'wb') as output:
+        output.write(nozipped)
+        output.close()
+    toUnNozip = open('nozip-compressed.pdf', 'rb').read()
+    unnozipped = NoZip(toUnNozip).decompress()
+    with open('nozip-complete.pdf', 'wb') as output:
+        output.write(unnozipped)
+        output.close()
     
     # test Bzip
     bzipped = Bzip(testdata).compress()

@@ -1,6 +1,25 @@
 import os, hashlib, nacl.secret, nacl.utils
 from cryptography.fernet import Fernet
 
+class NoEnc:
+    def __init__(self, data):
+        self.key = ''
+        self.type = 'NoEnc'
+        self.suffix = '.noenc'
+        self.data = data
+
+    def encrypt(self):
+        if type(self.data) != bytes:
+            return str.encode(self.data)
+        else:
+            return self.data
+    
+    def decrypt(self):
+        if type(self.data) != bytes:
+            return str.encode(self.data)
+        else:
+            return self.data
+
 class DJFernet:
     def __init__(self, data):
         self.key = ''
@@ -65,6 +84,21 @@ if __name__ == '__main__':
         print('./keys/ exists!')
     else:
         os.makedirs(r'./keys/')
+
+    # test NoEnc
+    with open('10_mb.pdf', 'rb') as file:
+        testNoEnc = NoEnc(file.read())
+        file.close()
+        with open('noenc-encrypted.pdf', 'wb') as encrypted:
+            encrypted.write(testNoEnc.encrypt())
+            encrypted.close()
+    with open('noenc-encrypted.pdf', 'rb') as toDecryptFile:
+        toDecryptNoEnc = NoEnc(toDecryptFile.read())
+        toDecryptFile.close()
+        with open('noenc-completed.pdf', 'wb') as finalFile:
+            decryptedData = toDecryptNoEnc.decrypt()
+            finalFile.write(decryptedData)
+            finalFile.close()
 
     # test DJFernet
     with open('10_mb.pdf', 'rb') as file:
