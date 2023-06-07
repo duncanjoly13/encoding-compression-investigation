@@ -1,3 +1,5 @@
+import glob
+
 def get_time(filesize, network_speed):
     return ((filesize * 8) / network_speed) / 1000
 
@@ -6,7 +8,7 @@ def edit(filename):
     try:
         with open(filename) as file:
             rawLines = file.readlines()
-            newData += rawLines[0][:-1] + ',total time EXCL. read + write times (ms),total time INCL. read and write times,compression ratio,estimated network time @ 1Mbps (s),estimated network time @ 5Mbps (s),estimated network time @ 10Mbps (s)\n'
+            newData += rawLines[0][:-1] + ',total time EXCL. read + write times (ms),total time INCL. read and write times,compression ratio,estimated network time @ 1Mbps (ms),estimated network time @ 5Mbps (ms),estimated network time @ 10Mbps (ms)\n'
             rawData = rawLines[1:]
             for line in rawData:
                 originalSize = float(line.split(',')[1])
@@ -22,7 +24,7 @@ def edit(filename):
                 memoryOperationsTotalTime = encryptTime + compressTime + decompressTime + decryptTime
                 totalTime = memoryOperationsTotalTime + intermediateWriteTime + intermediateReadTime + finalWriteTime
 
-                newData += line[:-1] + str("{:.3f}".format(memoryOperationsTotalTime)) + ',' + str("{:.3f}".format(totalTime)) + ',' + str("{:.3f}".format((compressedSize / originalSize))) + ',' + str("{:.3f}".format(get_time(compressedSize, 1))) + ',' + str("{:.3f}".format(get_time(compressedSize, 5))) + ',' + str("{:.3f}".format(get_time(compressedSize, 10))) + '\n'
+                newData += line[:-1] + ',' + str("{:.3f}".format(memoryOperationsTotalTime)) + ',' + str("{:.3f}".format(totalTime)) + ',' + str("{:.3f}".format((compressedSize / originalSize))) + ',' + str("{:.3f}".format(get_time(compressedSize, 1))) + ',' + str("{:.3f}".format(get_time(compressedSize, 5))) + ',' + str("{:.3f}".format(get_time(compressedSize, 10))) + '\n'
             file.close()
 
         with open(filename[:-4] + '-PROCESSED.csv', 'w') as newFile:
@@ -32,4 +34,5 @@ def edit(filename):
         print("File '%s' does not exist" %filename)
 
 if __name__ == '__main__':
-    edit('2023-06-07--13-35-results.csv')
+    files = glob.glob('*results.csv')
+    edit(files[0])

@@ -1,15 +1,16 @@
-#TODO add intermediate memory sizes
-#TODO graphs
-#TODO broad narrative
-#TODO examine character of the file - file hashes
+#TODO find file size where preferred order switches - between 10 and 95MB - binary search
+#TODO make cleaner table (drop rarely used item)
 #TODO fix NaCl UnicodeDecodeError or decide on other method
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
+#TODO graphs
+#TODO broad narrative
+#TODO examine character of the file - file hashes
 #TODO more file types and sizes
 #TODO detect invalid files in filelist
 #TODO handle existing results file - throw error and require that file is deleted first
 
-import djcomp, djenc, time, os, shutil
+import djcomp, djenc, time, os, shutil, sys
 
 class Test:
     def __init__(self, *filenames):
@@ -77,7 +78,8 @@ class Test:
                 compObj = compMethod(data)
                 compressedData = compObj.compress()
                 compressionTime = (time.time() - compressionStartTime) * 1000
-                
+                firstIntermediateSize = sys.getsizeof(compressedData)
+
                 encryptionStartTime = time.time()
                 encObj = encMethod(compressedData)
                 encryptedData = encObj.encrypt()
@@ -119,7 +121,7 @@ class Test:
 
                 self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
                                         (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                        (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',')+ '\n')
+                                        (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',') + (str(firstIntermediateSize)) + '\n')
 
     def encryptionFirst(self, filename):
         with open(filename, 'rb') as file:
@@ -132,6 +134,7 @@ class Test:
                 encObj = encMethod(data)
                 encryptedData = encObj.encrypt()
                 encryptionTime = (time.time() - encryptionStartTime) * 1000
+                firstIntermediateSize = sys.getsizeof(encryptedData)
 
                 compressionStartTime = time.time()
                 compObj = compMethod(encryptedData)
@@ -174,12 +177,12 @@ class Test:
 
                 self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
                                     (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                    (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',')+ '\n')
+                                    (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',') + (str(firstIntermediateSize)) + '\n')
 
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms)\n'
+        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B)\n'
         file = open(self.filename, 'w')
         file.write(self.header)
         file.close()
@@ -191,5 +194,5 @@ class Sheet:
 
 if __name__ == '__main__':
     #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
-    test = Test('10_mb.pdf')
+    test = Test('enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
     test.run()
