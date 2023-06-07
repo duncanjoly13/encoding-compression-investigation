@@ -103,9 +103,9 @@ class Test:
                             if finalSize != os.path.getsize(filename):
                                 print(filename, 'with', compObj.type, 'then', encObj.type + ': SIZE DIFFERS')
 
-                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionAndWriteTime) + ',') + 
-                                                 (str(compressionTime) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str(decompressionAndWriteTime) + ',') + 
-                                                 (str(decryptionTime) + ',') + (str(encryptionAndWriteTime + decryptionTime + compressionTime + decompressionAndWriteTime)) + '\n')
+                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.3f}".format(encryptionAndWriteTime)) + ',') + 
+                                                 (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.3f}".format(decompressionAndWriteTime)) + ',') + 
+                                                 (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(encryptionAndWriteTime + decryptionTime + compressionTime + decompressionAndWriteTime))) + '\n')
             file.close()
 
     def encryptionFirst(self, filename):
@@ -142,9 +142,9 @@ class Test:
                             if finalSize != os.path.getsize(filename):
                                 print(filename, 'with', encObj.type, 'then', compObj.type + ': SIZE DIFFERS')
 
-                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
-                                             (str(compressionAndWriteTime) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str(decompressionTime) + ',') + 
-                                             (str(decryptionAndWriteTime) + ',') + (str(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime)) + '\n')
+                            self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
+                                             (str("{:.3f}".format(compressionAndWriteTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
+                                             (str("{:.3f}".format(decryptionAndWriteTime)) + ',') + (str("{:.3f}".format(encryptionTime + decryptionAndWriteTime + compressionAndWriteTime + decompressionTime))) + '\n')
             file.close()
 
 class Sheet:
