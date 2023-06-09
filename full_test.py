@@ -1,5 +1,5 @@
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
-#TODO make cleaner table (drop rarely used item)
+#TODO make cleaner table (drop rarely used items)
 #TODO fix NaCl UnicodeDecodeError or decide on other method
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
@@ -9,6 +9,7 @@
 #TODO more file types and sizes
 #TODO detect invalid files in filelist
 #TODO handle existing results file - throw error and require that file is deleted first
+#TODO consider Python Style Guide
 
 import djcomp, djenc, time, os, shutil, sys
 
@@ -194,5 +195,5 @@ class Sheet:
 
 if __name__ == '__main__':
     #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
-    test = Test('enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
+    test = Test('enwik8_1mb.txt')
     test.run()
