@@ -1,4 +1,6 @@
-import os, hashlib, nacl.secret, nacl.utils
+import os, nacl.secret, nacl.utils
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
 from cryptography.fernet import Fernet
 
 class NoEnc:
@@ -33,17 +35,14 @@ class DJFernet:
         if type(self.data) != bytes:
             self.data = str.encode(self.data)
         encMessage = f.encrypt(self.data)
-        with open('./keys/' + encMessage.decode("utf-8")[:10] + '.key', 'wb') as keyFP:
+        with open('./keys/fernet.key', 'wb') as keyFP:
             keyFP.write(self.key)
             keyFP.flush()
             keyFP.close()
         return encMessage
     
     def decrypt(self):
-        keyprefix = self.data[:10]
-        if type(self.data) == bytes:
-            keyprefix = self.data[:10].decode()
-        with open('./keys/' + keyprefix + '.key', 'rb') as f_in:
+        with open('./keys/fernet.key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)
@@ -62,26 +61,45 @@ class NaCl:
         if type(self.data) != bytes:
             self.data = str.encode(self.data)
         encMessage = self.box.encrypt(self.data)
-        ### FOR TESTING
-        print(encMessage)
-        print(type(encMessage))
-        ###
-        with open('./keys/' + encMessage.decode("utf-8")[:10] + '.key', 'wb') as keyFP:
+        with open('./keys/nacl.key', 'wb') as keyFP:
             keyFP.write(self.key)
             keyFP.flush()
             keyFP.close()
         return encMessage
 
     def decrypt(self):
-        keyprefix = self.data[:10]
-        if type(self.data) == bytes:
-            keyprefix = self.data[:10].decode()
-        with open('./keys/' + keyprefix + '.key', 'rb') as f_in:
+        with open('./keys/nacl.key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
         self.box = nacl.secret.SecretBox(self.key)
         decMessage = self.box.decrypt(self.data)
         return decMessage
+    
+class DJAES:
+    def __init__(self, data):
+        self.key = ''
+        self.type = 'AES'
+        self.suffix = '.aes'
+        self.data = data
+    
+    def encrypt(self):
+        self.key = get_random_bytes(16)
+        if type(self.data) != bytes:
+            self.data = str.encode(self.data, 'utf-8')
+        cipher = AES.new(self.key, AES.MODE_CFB)
+        encMessage = cipher.encrypt(self.data) + cipher.iv
+        with open('./keys/aes.key', 'wb') as keyFP:
+            keyFP.write(self.key)
+            keyFP.flush()
+            keyFP.close()
+        return encMessage
+
+    def decrypt(self):
+        with open('./keys/aes.key', 'rb') as f_in:
+            self.key = f_in.read()
+            f_in.close()
+        decMessage= AES.new(self.key, AES.MODE_CFB, iv=self.data[-16:])
+        return decMessage.decrypt(self.data)  
 
 if __name__ == '__main__':
     if os.path.exists(r'./keys/'):
@@ -89,7 +107,7 @@ if __name__ == '__main__':
     else:
         os.makedirs(r'./keys/')
 
-    '''# test NoEnc
+    # test NoEnc
     with open('10_mb.pdf', 'rb') as noEncFile:
         testNoEnc = NoEnc(noEncFile.read())
         noEncFile.close()
@@ -104,7 +122,7 @@ if __name__ == '__main__':
         noEncFinalFile.write(decryptedNoEncData)
         noEncFinalFile.close()
 
-    # test DJFernet
+    # test Fernet
     with open('10_mb.pdf', 'rb') as fernetfile:
         testFernet = DJFernet(fernetfile.read())
         fernetfile.close()
@@ -117,7 +135,7 @@ if __name__ == '__main__':
     with open('Fernet-completed.pdf', 'wb') as fernetFinalFile:
         decryptedFernetData = toDecryptFernet.decrypt()
         fernetFinalFile.write(decryptedFernetData)
-        fernetFinalFile.close()'''
+        fernetFinalFile.close()
 
     # test NaCl
     with open('10_mb.pdf', 'rb') as naclFile:
@@ -133,3 +151,18 @@ if __name__ == '__main__':
         decryptedNaclData = toDecryptNaCl.decrypt()
         naclFinalFile.write(decryptedNaclData)
         naclFinalFile.close()
+
+    # test AES
+    with open('10_mb.pdf', 'rb') as aesfile:
+        testAES = DJAES(aesfile.read())
+        aesfile.close()
+    with open('AES-encrypted.pdf', 'wb') as aesEncrypted:
+        aesEncrypted.write(testAES.encrypt())
+        aesEncrypted.close()
+    with open('AES-encrypted.pdf', 'rb') as aesToDecryptFile:
+        toDecryptAES = DJAES(aesToDecryptFile.read())
+        aesToDecryptFile.close()
+    with open('AES-completed.pdf', 'wb') as aesFinalFile:
+        decryptedAESData = toDecryptAES.decrypt()
+        aesFinalFile.write(decryptedAESData)
+        aesFinalFile.close()

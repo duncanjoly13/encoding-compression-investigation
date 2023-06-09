@@ -1,6 +1,5 @@
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO make cleaner table (drop rarely used items)
-#TODO fix NaCl UnicodeDecodeError or decide on other method
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
 #TODO graphs
