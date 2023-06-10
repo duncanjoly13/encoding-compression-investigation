@@ -1,10 +1,10 @@
+#TODO fix NaCl, AES with gzip
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO make cleaner table (drop rarely used items)
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
 #TODO graphs
 #TODO broad narrative
-#TODO rewrite tests in djenc to match djcomp
 #TODO examine character of the file - file hashes
 #TODO more file types and sizes
 #TODO consider Python Style Guide

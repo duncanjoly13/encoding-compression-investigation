@@ -69,7 +69,9 @@ class Zip:
         return file_buffer.read()
 
 if __name__ == '__main__':
-    testdata = open('10_mb.pdf', 'rb').read()
+    with open('10_mb.pdf', 'rb').read() as file:
+        testdata = file.read()
+        file.close()
 
     # test NoZip
     nozipped = NoZip(testdata).compress()

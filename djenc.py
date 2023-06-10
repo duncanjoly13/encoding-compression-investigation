@@ -107,10 +107,12 @@ if __name__ == '__main__':
     else:
         os.makedirs(r'./keys/')
 
+    with open('10_mb.pdf', 'rb') as file:
+        testdata = file.read()
+        file.close()
+
     # test NoEnc
-    with open('10_mb.pdf', 'rb') as noEncFile:
-        testNoEnc = NoEnc(noEncFile.read())
-        noEncFile.close()
+    testNoEnc = NoEnc(testdata)
     with open('noenc-encrypted.pdf', 'wb') as noEncEncrypted:
         noEncEncrypted.write(testNoEnc.encrypt())
         noEncEncrypted.close()
@@ -123,9 +125,7 @@ if __name__ == '__main__':
         noEncFinalFile.close()
 
     # test Fernet
-    with open('10_mb.pdf', 'rb') as fernetfile:
-        testFernet = DJFernet(fernetfile.read())
-        fernetfile.close()
+    testFernet = DJFernet(testdata)
     with open('Fernet-encrypted.pdf', 'wb') as fernetEncrypted:
         fernetEncrypted.write(testFernet.encrypt())
         fernetEncrypted.close()
@@ -138,9 +138,7 @@ if __name__ == '__main__':
         fernetFinalFile.close()
 
     # test NaCl
-    with open('10_mb.pdf', 'rb') as naclFile:
-        testNaCl = NaCl(naclFile.read())
-        naclFile.close()
+    testNaCl = NaCl(testdata)
     with open('NaCl-encrypted.pdf', 'wb') as naclEncrypted:
         naclEncrypted.write(testNaCl.encrypt())
         naclEncrypted.close()
@@ -153,9 +151,7 @@ if __name__ == '__main__':
         naclFinalFile.close()
 
     # test AES
-    with open('10_mb.pdf', 'rb') as aesfile:
-        testAES = DJAES(aesfile.read())
-        aesfile.close()
+    testAES = DJAES(testdata)
     with open('AES-encrypted.pdf', 'wb') as aesEncrypted:
         aesEncrypted.write(testAES.encrypt())
         aesEncrypted.close()
