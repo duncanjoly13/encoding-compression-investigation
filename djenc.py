@@ -1,7 +1,7 @@
 import os, nacl.secret, nacl.utils
+from cryptography.fernet import Fernet
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
-from cryptography.fernet import Fernet
 
 class NoEnc:
     def __init__(self, data):
@@ -98,8 +98,8 @@ class DJAES:
         with open('./keys/aes.key', 'rb') as f_in:
             self.key = f_in.read()
             f_in.close()
-        decMessage= AES.new(self.key, AES.MODE_CFB, iv=self.data[-16:])
-        return decMessage.decrypt(self.data)  
+        cipher = AES.new(self.key, AES.MODE_CFB, iv=self.data[-16:])
+        return cipher.decrypt(self.data)
 
 if __name__ == '__main__':
     if os.path.exists(r'./keys/'):

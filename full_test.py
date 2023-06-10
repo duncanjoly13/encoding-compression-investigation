@@ -4,10 +4,9 @@
 #TODO implement lossy compression algorithm
 #TODO graphs
 #TODO broad narrative
+#TODO rewrite tests in djenc to match djcomp
 #TODO examine character of the file - file hashes
 #TODO more file types and sizes
-#TODO detect invalid files in filelist
-#TODO handle existing results file - throw error and require that file is deleted first
 #TODO consider Python Style Guide
 
 import djcomp, djenc, time, os, shutil, sys
@@ -15,7 +14,7 @@ import djcomp, djenc, time, os, shutil, sys
 class Test:
     def __init__(self, *filenames):
         self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
-        self.encryptionMethods = [djenc.NoEnc, djenc.DJFernet]
+        self.encryptionMethods = [djenc.NoEnc, djenc.DJFernet, djenc.NaCl, djenc.DJAES]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
@@ -183,16 +182,20 @@ class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
         self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B)\n'
-        file = open(self.filename, 'w')
-        file.write(self.header)
-        file.close()
+        
+        if os.path.exists(self.filename):
+            print('Results file %s exists!' % self.filename)
+        else:
+            with open(self.filename, 'w') as file:
+                file.write(self.header)
+                file.close()
 
     def addData(self, data):
-        file = open(self.filename, 'a')
-        file.write(data)
-        file.close()
+        with open(self.filename, 'a') as file:
+            file.write(data)
+            file.close()
 
 if __name__ == '__main__':
     #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
-    test = Test('enwik8_1mb.txt')
+    test = Test('10_mb.pdf')
     test.run()
