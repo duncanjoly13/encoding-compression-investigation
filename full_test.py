@@ -3,6 +3,7 @@
 #TODO make cleaner table (drop rarely used items)
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
+#TODO rename encryption algoritms currently including 'DJ' for professionalism
 #TODO graphs
 #TODO broad narrative
 #TODO examine character of the file - file hashes
