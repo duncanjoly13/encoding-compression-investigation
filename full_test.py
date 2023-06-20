@@ -1,4 +1,4 @@
-#TODO fix NaCl, AES with gzip
+#TODO fix AES with gzip enc first
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO make cleaner table (drop rarely used items)
 #TODO implement asymmetric key encryption
@@ -15,7 +15,7 @@ import djcomp, djenc, time, os, shutil, sys
 class Test:
     def __init__(self, *filenames):
         self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
-        self.encryptionMethods = [djenc.NoEnc, djenc.DJFernet, djenc.NaCl, djenc.DJAES]
+        self.encryptionMethods = [djenc.DJAES]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
@@ -198,5 +198,5 @@ class Sheet:
 
 if __name__ == '__main__':
     #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
-    test = Test('10_mb.pdf')
+    test = Test('enwik8_1mb.txt')
     test.run()

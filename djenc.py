@@ -65,7 +65,7 @@ class NaCl:
             keyFP.write(self.key)
             keyFP.flush()
             keyFP.close()
-        return encMessage
+        return encMessage.__bytes__()
 
     def decrypt(self):
         with open('./keys/nacl.key', 'rb') as f_in:
