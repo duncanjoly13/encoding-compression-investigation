@@ -1,3 +1,5 @@
+#TODO box plot of counts from characterization.py
+
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO make cleaner table (drop rarely used items)
 #TODO implement asymmetric key encryption
