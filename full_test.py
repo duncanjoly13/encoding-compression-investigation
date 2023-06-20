@@ -1,4 +1,3 @@
-#TODO fix AES with gzip enc first
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO make cleaner table (drop rarely used items)
 #TODO implement asymmetric key encryption
@@ -15,7 +14,7 @@ import djcomp, djenc, time, os, shutil, sys
 class Test:
     def __init__(self, *filenames):
         self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
-        self.encryptionMethods = [djenc.DJAES]
+        self.encryptionMethods = [djenc.NoEnc, djenc.DJFernet, djenc.NaCl, djenc.DJAES]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
@@ -155,8 +154,8 @@ class Test:
                 intermediateReadTime = (time.time() - intermediateReadStartTime) * 1000
 
                 decompressionStartTime = time.time()
-                decompObj = compMethod(toDecompressData)
-                decompressedData = decompObj.decompress()
+                decompObjEncFirst = compMethod(toDecompressData)
+                decompressedData = decompObjEncFirst.decompress()
                 decompressionTime = (time.time() - decompressionStartTime) * 1000
 
                 decryptionStartTime = time.time()
@@ -191,9 +190,9 @@ class Sheet:
                 file.write(self.header)
                 file.close()
 
-    def addData(self, data):
+    def addData(self, resultsData):
         with open(self.filename, 'a') as file:
-            file.write(data)
+            file.write(resultsData)
             file.close()
 
 if __name__ == '__main__':
