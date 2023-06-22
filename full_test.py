@@ -1,5 +1,5 @@
 #TODO box plot of counts from characterization.py
-#TODO integrate charaacterization into test - source file and after encryption only
+#TODO integrate characterization into test - source file and after encryption only
 
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO make cleaner table (drop rarely used items)

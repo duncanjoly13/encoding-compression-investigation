@@ -12,7 +12,7 @@ with open(filename, 'rb') as file:
 
 counter = 0
 while counter < len(data) - keySize:
-    currentPhrase = data[counter:counter + keySize]
+    currentPhrase = data[counter:(counter + keySize)]
     if currentPhrase in demographic.keys():
         demographic[currentPhrase] += 1
         counter += keySize
@@ -23,7 +23,7 @@ while counter < len(data) - keySize:
 for pattern in demographic.keys():
     counts.append(demographic[pattern])
 
-print(np.mean(counts))
-print(np.std(counts))
-print(np.max(counts))
-print(len(demographic.keys()))
+print('mean:', str(np.mean(counts)))
+print('std:', str(np.std(counts)))
+print('max:', str(np.max(counts)))
+print('total keys:', str(len(demographic.keys())))
