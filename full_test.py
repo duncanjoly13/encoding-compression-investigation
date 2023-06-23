@@ -1,6 +1,7 @@
 #TODO box plot of counts from characterization.py
 #TODO integrate characterization into test - source file and after encryption only
 #TODO work on readme.md
+#TODO documentation
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
