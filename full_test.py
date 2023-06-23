@@ -1,6 +1,6 @@
 #TODO box plot of counts from characterization.py
 #TODO integrate characterization into test - source file and after encryption only
-
+#TODO work on readme.md
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
@@ -14,7 +14,7 @@ import djcomp, djenc, time, os, shutil, sys
 
 class Test:
     def __init__(self, *filenames):
-        self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
+        self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip, djcomp.LZMA]
         self.encryptionMethods = [djenc.NoEnc, djenc.TestFernet, djenc.NaCl, djenc.TestAES]
         self.results = Sheet()
         self.resultsFolder = r'./results/'

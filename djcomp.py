@@ -1,4 +1,4 @@
-import gzip, bz2, zipfile, io
+import gzip, bz2, zipfile, io, lzma
 
 class NoZip:
     def __init__(self, data):
@@ -67,9 +67,25 @@ class Zip:
             file_buffer.write(zip_file.read('data'))
         file_buffer.seek(0)
         return file_buffer.read()
+    
+class LZMA:
+    def __init__(self, data):
+        self.suffix = '.lzma'
+        self.type = 'lzma'
+        self.data = data
 
+    def compress(self):
+        if type(self.data) != bytes:
+            self.data = str.encode(self.data)
+        return lzma.compress(self.data)
+    
+    def decompress(self):
+        if type(self.data) != bytes:
+            self.data = str.encode(self.data)
+        return lzma.decompress(self.data)
+    
 if __name__ == '__main__':
-    with open('10_mb.pdf', 'rb').read() as file:
+    with open('10_mb.pdf', 'rb') as file:
         testdata = file.read()
         file.close()
 
@@ -116,3 +132,15 @@ if __name__ == '__main__':
     with open('zip-complete.pdf', 'wb') as output:
         output.write(unzipped)
         output.close()
+
+    # test LZMA
+    LZMAtest = LZMA(testdata).compress()
+    with open('lzma-compressed.pdf', 'wb') as output:
+        output.write(LZMAtest)
+        output.close()
+    toUnLZMA = open('lzma-compressed.pdf', 'rb').read()
+    unLZMAed = LZMA(toUnLZMA).decompress()
+    with open('lzma-complete.pdf', 'wb') as output:
+        output.write(unLZMAed)
+        output.close()
+
