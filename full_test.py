@@ -2,10 +2,8 @@
 #TODO integrate characterization into test - source file and after encryption only
 
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
-#TODO make cleaner table (drop rarely used items)
 #TODO implement asymmetric key encryption
 #TODO implement lossy compression algorithm
-#TODO rename encryption algoritms currently including 'DJ' for professionalism
 #TODO graphs
 #TODO broad narrative
 #TODO examine character of the file - file hashes
@@ -17,7 +15,7 @@ import djcomp, djenc, time, os, shutil, sys
 class Test:
     def __init__(self, *filenames):
         self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip]
-        self.encryptionMethods = [djenc.NoEnc, djenc.DJFernet, djenc.NaCl, djenc.DJAES]
+        self.encryptionMethods = [djenc.NoEnc, djenc.TestFernet, djenc.NaCl, djenc.TestAES]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'

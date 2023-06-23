@@ -22,7 +22,7 @@ class NoEnc:
         else:
             return self.data
 
-class DJFernet:
+class TestFernet:
     def __init__(self, data):
         self.key = ''
         self.type = 'Fernet'
@@ -75,7 +75,7 @@ class NaCl:
         decMessage = self.box.decrypt(self.data)
         return decMessage
     
-class DJAES:
+class TestAES:
     def __init__(self, data):
         self.key = ''
         self.type = 'AES'
@@ -125,12 +125,12 @@ if __name__ == '__main__':
         noEncFinalFile.close()
 
     # test Fernet
-    testFernet = DJFernet(testdata)
+    testFernet = TestFernet(testdata)
     with open('Fernet-encrypted.pdf', 'wb') as fernetEncrypted:
         fernetEncrypted.write(testFernet.encrypt())
         fernetEncrypted.close()
     with open('Fernet-encrypted.pdf', 'rb') as fernetToDecryptFile:
-        toDecryptFernet = DJFernet(fernetToDecryptFile.read())
+        toDecryptFernet = TestFernet(fernetToDecryptFile.read())
         fernetToDecryptFile.close()
     with open('Fernet-completed.pdf', 'wb') as fernetFinalFile:
         decryptedFernetData = toDecryptFernet.decrypt()
@@ -151,12 +151,12 @@ if __name__ == '__main__':
         naclFinalFile.close()
 
     # test AES
-    testAES = DJAES(testdata)
+    testAES = TestAES(testdata)
     with open('AES-encrypted.pdf', 'wb') as aesEncrypted:
         aesEncrypted.write(testAES.encrypt())
         aesEncrypted.close()
     with open('AES-encrypted.pdf', 'rb') as aesToDecryptFile:
-        toDecryptAES = DJAES(aesToDecryptFile.read())
+        toDecryptAES = TestAES(aesToDecryptFile.read())
         aesToDecryptFile.close()
     with open('AES-completed.pdf', 'wb') as aesFinalFile:
         decryptedAESData = toDecryptAES.decrypt()
