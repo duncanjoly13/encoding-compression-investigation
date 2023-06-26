@@ -1,29 +1,33 @@
 import numpy as np
 
-keySize = 8
-filename = 'enwik8_1mb.txt'
+def run(filename, keySize):
+    demographic = {}
+    counts = []
 
-demographic = {}
-counts = []
+    with open(filename, 'rb') as file:
+        data = file.read()
+        file.close()
 
-with open(filename, 'rb') as file:
-    data = file.read()
-    file.close()
+    counter = 0
+    while counter < len(data) - keySize:
+        currentPhrase = data[counter:(counter + keySize)]
+        if currentPhrase in demographic.keys():
+            demographic[currentPhrase] += 1
+            counter += keySize
+        else:
+            demographic[currentPhrase] = 1
+            counter += keySize
 
-counter = 0
-while counter < len(data) - keySize:
-    currentPhrase = data[counter:(counter + keySize)]
-    if currentPhrase in demographic.keys():
-        demographic[currentPhrase] += 1
-        counter += keySize
-    else:
-        demographic[currentPhrase] = 1
-        counter += keySize
+    for pattern in demographic.keys():
+        counts.append(demographic[pattern])
+    
+    output = {}
+    output['mean'] = np.mean(counts)
+    output['std'] = np.std(counts)
+    output['max'] = np.max(counts)
+    output['total'] = len(demographic.leys())
 
-for pattern in demographic.keys():
-    counts.append(demographic[pattern])
+    return output
 
-print('mean:', str(np.mean(counts)))
-print('std:', str(np.std(counts)))
-print('max:', str(np.max(counts)))
-print('total keys:', str(len(demographic.keys())))
+if __name__ == '__main__':
+    run('enwik_1mb.txt', 8)
