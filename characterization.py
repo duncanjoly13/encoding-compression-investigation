@@ -1,6 +1,6 @@
 import numpy as np
 
-def run(filename, keySize):
+def run(filename, keySize = 10):
     demographic = {}
     counts = []
 
@@ -30,4 +30,4 @@ def run(filename, keySize):
     return output
 
 if __name__ == '__main__':
-    run('enwik_1mb.txt', 8)
+    run('enwik_1mb.txt')
