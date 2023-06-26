@@ -25,7 +25,7 @@ def run(filename, keySize):
     output['mean'] = np.mean(counts)
     output['std'] = np.std(counts)
     output['max'] = np.max(counts)
-    output['total'] = len(demographic.leys())
+    output['total'] = len(demographic.keys())
 
     return output
 
