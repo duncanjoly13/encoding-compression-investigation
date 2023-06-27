@@ -26,7 +26,7 @@ def getCharacter(data, keySize = 10):
     return output
 
 if __name__ == '__main__':
-    with open('enwik_1mb.txt', 'rb') as file:
+    with open('enwik8_1mb.txt', 'rb') as file:
         data = file.read()
         file.close()
 
