@@ -1,5 +1,4 @@
 #TODO box plot of counts from characterization.py
-#TODO integrate characterization into test - source file and after encryption only
 #TODO work on readme.md
 #TODO documentation
 #TODO find file size where preferred order switches - between 10 and 95MB - binary search
@@ -11,7 +10,7 @@
 #TODO more file types and sizes
 #TODO consider Python Style Guide
 
-import djcomp, djenc, time, os, shutil, sys
+import djcomp, djenc, time, os, shutil, sys, characterization
 
 class Test:
     def __init__(self, *filenames):
@@ -21,6 +20,7 @@ class Test:
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
         self.basefilenames = list(filenames)
+        self.characterKeySize = 8
 
         if os.path.exists(self.resultsFolder):
             print("%s exists!" % self.resultsFolder)
@@ -50,8 +50,8 @@ class Test:
             
     def run(self):
         for filename in self.basefilenames:
-            self.compressionFirst(filename)
-            self.encryptionFirst(filename)
+            self.compressionFirst(filename, self.characterKeySize)
+            self.encryptionFirst(filename, self.characterKeySize)
 
         if os.path.isdir(self.resultsFolder):
             shutil.rmtree(self.resultsFolder)
@@ -68,10 +68,12 @@ class Test:
         else:
             print("No pycache folder, not deleting")
 
-    def compressionFirst(self, filename):
+    def compressionFirst(self, filename, characterKeySize):
         with open(filename, 'rb') as file:
             data = file.read()
             file.close()
+
+        compFirstInitialCharacter = characterization.getCharacter(data, characterKeySize)
 
         for compMethod in self.compressionMethods:
             for encMethod in self.encryptionMethods:
@@ -120,14 +122,18 @@ class Test:
                 if finalSize != os.path.getsize(filename):
                     print(filename, 'with', compObj.type, 'then', encObj.type + ': SIZE DIFFERS')
 
-                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
-                                        (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                        (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',') + (str(firstIntermediateSize)) + '\n')
+                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.4f}".format(encryptionTime)) + ',') + 
+                                        (str("{:.4f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.4f}".format(decompressionTime)) + ',') + 
+                                        (str("{:.4f}".format(decryptionTime)) + ',') + (str("{:.4f}".format(intermediateWriteTime)) + ',') + (str("{:.4f}".format(intermediateReadTime)) + ',') + (str("{:.4f}".format(finalWriteTime)) + ',') + 
+                                        ((str(firstIntermediateSize)) + ',') + (str("{:.4f}".format(compFirstInitialCharacter['mean']) + ',')) + (str("{:.4f}".format(compFirstInitialCharacter['std']) + ',')) + 
+                                        (str("{:.4f}".format(compFirstInitialCharacter['max'])) + ',') + (str(compFirstInitialCharacter['total']) + ',') + ('N/A,') + ('N/A,') + ('N/A,') + ('N/A') + '\n')
 
-    def encryptionFirst(self, filename):
+    def encryptionFirst(self, filename, characterKeySize):
         with open(filename, 'rb') as file:
             data = file.read()
             file.close()
+
+        encFirstInitialCharacter = characterization.getCharacter(data, characterKeySize)
 
         for encMethod in self.encryptionMethods:
             for compMethod in self.compressionMethods:
@@ -136,6 +142,8 @@ class Test:
                 encryptedData = encObj.encrypt()
                 encryptionTime = (time.time() - encryptionStartTime) * 1000
                 firstIntermediateSize = sys.getsizeof(encryptedData)
+
+                afterEncCharacter = characterization.getCharacter(encryptedData, characterKeySize)
 
                 compressionStartTime = time.time()
                 compObj = compMethod(encryptedData)
@@ -176,14 +184,17 @@ class Test:
                 if finalSize != os.path.getsize(filename):
                     print(filename, 'with', encObj.type, 'then', compObj.type + ': SIZE DIFFERS')
 
-                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.3f}".format(encryptionTime)) + ',') + 
-                                    (str("{:.3f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.3f}".format(decompressionTime)) + ',') + 
-                                    (str("{:.3f}".format(decryptionTime)) + ',') + (str("{:.3f}".format(intermediateWriteTime)) + ',') + (str("{:.3f}".format(intermediateReadTime)) + ',') + (str("{:.3f}".format(finalWriteTime)) + ',') + (str(firstIntermediateSize)) + '\n')
+                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.4f}".format(encryptionTime)) + ',') + 
+                                    (str("{:.4f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.4f}".format(decompressionTime)) + ',') + 
+                                    (str("{:.4f}".format(decryptionTime)) + ',') + (str("{:.4f}".format(intermediateWriteTime)) + ',') + (str("{:.4f}".format(intermediateReadTime)) + ',') + (str("{:.4f}".format(finalWriteTime)) + ',') + 
+                                    (str(firstIntermediateSize) + ',') + (str("{:.4f}".format(encFirstInitialCharacter['mean'])) + ',') + (str("{:.4f}".format(encFirstInitialCharacter['std'])) + ',') + 
+                                    (str("{:.4f}".format(encFirstInitialCharacter['max'])) + ',') + (str(encFirstInitialCharacter['total']) + ',') + (str("{:.4f}".format(afterEncCharacter['mean']) + ',')) + 
+                                    (str("{:.4f}".format(afterEncCharacter['std'])) + ',') + (str("{:.4f}".format(afterEncCharacter['max'])) + ',') + (str(afterEncCharacter['total'])) + '\n')
 
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B)\n'
+        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B),initial characterization - mean,initial characterization - std,initial characterization - max,initial characterization - total keys,after encryption characterization - mean,after encryption characterization - std,after encryption characterization - max,after encryption characterization - total keys\n'
         
         if os.path.exists(self.filename):
             print('Results file %s exists!' % self.filename)

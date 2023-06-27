@@ -1,12 +1,8 @@
 import numpy as np
 
-def run(filename, keySize = 10):
+def getCharacter(data, keySize = 10):
     demographic = {}
     counts = []
-
-    with open(filename, 'rb') as file:
-        data = file.read()
-        file.close()
 
     counter = 0
     while counter < len(data) - keySize:
@@ -30,4 +26,8 @@ def run(filename, keySize = 10):
     return output
 
 if __name__ == '__main__':
-    run('enwik_1mb.txt')
+    with open('enwik_1mb.txt', 'rb') as file:
+        data = file.read()
+        file.close()
+
+    print(getCharacter(data))
