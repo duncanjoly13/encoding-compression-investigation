@@ -10,12 +10,12 @@
 #TODO more file types and sizes
 #TODO consider Python Style Guide
 
-import djcomp, djenc, time, os, shutil, sys, characterization
+import testcomp, testenc, time, os, shutil, sys, characterization
 
 class Test:
     def __init__(self, *filenames):
-        self.compressionMethods = [djcomp.NoZip, djcomp.Bzip, djcomp.Gzip, djcomp.Zip, djcomp.LZMA]
-        self.encryptionMethods = [djenc.NoEnc, djenc.TestFernet, djenc.NaCl, djenc.TestAES]
+        self.compressionMethods = [testcomp.NoZip, testcomp.Bzip, testcomp.Gzip, testcomp.Zip, testcomp.LZMA]
+        self.encryptionMethods = [testenc.NoEnc, testenc.TestFernet, testenc.NaCl, testenc.TestAES]
         self.results = Sheet()
         self.resultsFolder = r'./results/'
         self.keysFolder = r'./keys/'
