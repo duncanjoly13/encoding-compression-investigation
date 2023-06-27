@@ -46,7 +46,8 @@ class TestFernet:
             self.key = f_in.read()
             f_in.close()
         decryptKey = Fernet(self.key)
-        return decryptKey.decrypt(self.data)
+        decMessage = decryptKey.decrypt(self.data)
+        return decMessage
     
 class NaCl:
     def __init__(self, data):
@@ -99,7 +100,8 @@ class TestAES:
             self.key = f_in.read()
             f_in.close()
         cipher = AES.new(self.key, AES.MODE_CFB, iv=self.data[-16:])
-        return cipher.decrypt(self.data[:-16])
+        decMessage = cipher.decrypt(self.data[:-16])
+        return decMessage
 
 if __name__ == '__main__':
     if os.path.exists(r'./keys/'):
