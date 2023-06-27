@@ -113,7 +113,7 @@ class Test:
                 self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.4f}".format(encryptionTime)) + ',') + 
                                         (str("{:.4f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.4f}".format(decompressionTime)) + ',') + 
                                         (str("{:.4f}".format(decryptionTime)) + ',') + (str("{:.4f}".format(intermediateWriteTime)) + ',') + (str("{:.4f}".format(intermediateReadTime)) + ',') + (str("{:.4f}".format(finalWriteTime)) + ',') + 
-                                        ((str(firstIntermediateSize)) + ',') + (str("{:.4f}".format(compFirstInitialCharacter['mean']) + ',')) + (str("{:.4f}".format(compFirstInitialCharacter['std']) + ',')) + 
+                                        (str(firstIntermediateSize) + ',') + (str("{:.4f}".format(compFirstInitialCharacter['mean']) + ',')) + (str("{:.4f}".format(compFirstInitialCharacter['std']) + ',')) + 
                                         (str("{:.4f}".format(compFirstInitialCharacter['max'])) + ',') + (str(compFirstInitialCharacter['total']) + ',') + ('N/A,') + ('N/A,') + ('N/A,') + ('N/A') + '\n')
 
     def encryptionFirst(self, filename, characterKeySize):
