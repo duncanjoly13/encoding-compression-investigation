@@ -143,4 +143,3 @@ if __name__ == '__main__':
     with open('lzma-complete.pdf', 'wb') as output:
         output.write(unLZMAed)
         output.close()
-
