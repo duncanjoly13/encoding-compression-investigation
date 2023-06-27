@@ -2,18 +2,19 @@
 This project aims to evaluate different combinations of readily available encryption and compression algoritms in Python with respect to autonomous vehicle network transmission.
 
 Dependencies:
-pynacl
-pycryptodome
-fernet
+* pynacl
+* pycryptodome
+* fernet
+* numpy
 
-
-TODO box plot of counts from characterization.py
-TODO work on readme.md
-TODO find file size where preferred order switches - between 10 and 95MB - binary search
-TODO implement asymmetric key encryption
-TODO implement lossy compression algorithm
-TODO graphs
-TODO broad narrative
-TODO more test file types and sizes
-TODO consider Python Style Guide
-TODO documentation
+TODOs:
+* box plot of counts from characterization.py
+* work on readme.md
+* find file size where preferred order switches - between 10 and 95MB - binary search
+* implement asymmetric key encryption
+* implement lossy compression algorithm
+* graphs
+* broad narrative
+* more test file types and sizes
+* consider Python Style Guide
+* documentation
