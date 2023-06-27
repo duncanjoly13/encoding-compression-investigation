@@ -6,8 +6,7 @@
 #TODO implement lossy compression algorithm
 #TODO graphs
 #TODO broad narrative
-#TODO examine character of the file - file hashes
-#TODO more file types and sizes
+#TODO more test file types and sizes
 #TODO consider Python Style Guide
 
 import testcomp, testenc, time, os, shutil, sys, characterization
