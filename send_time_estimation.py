@@ -25,7 +25,7 @@ def edit(filename):
                 memoryOperationsTotalTime = encryptTime + compressTime + decompressTime + decryptTime
                 totalTime = memoryOperationsTotalTime + intermediateWriteTime + intermediateReadTime + finalWriteTime
 
-                newData += ((line[:-1] + ',') + (str("{:.3f}".format(memoryOperationsTotalTime)) + ',') + (str("{:.3f}".format(totalTime)) + ',') + (str("{:.3f}".format((compressedSize / originalSize))) + ',') + (str("{:.3f}".format(get_time(compressedSize, 1))) + ',') + (str("{:.3f}".format(get_time(compressedSize, 5))) + ',') + str("{:.3f}".format(get_time(compressedSize, 10))) + '\n')
+                newData += ((line[:-1] + ',') + (str("{:.4f}".format(memoryOperationsTotalTime)) + ',') + (str("{:.4f}".format(totalTime)) + ',') + (str("{:.4f}".format((compressedSize / originalSize))) + ',') + (str("{:.4f}".format(get_time(compressedSize, 1))) + ',') + (str("{:.4f}".format(get_time(compressedSize, 5))) + ',') + str("{:.4f}".format(get_time(compressedSize, 10))) + '\n')
             file.close()
 
         with open(filename[:-4] + '-PROCESSED.csv', 'w') as newFile:
