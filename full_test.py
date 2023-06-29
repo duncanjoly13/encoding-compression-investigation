@@ -202,4 +202,4 @@ class Sheet:
 
 if __name__ == '__main__':
     test = Test('mobileeye_ego_lane_center-data.csv', 'mobileeye_lane_markers-data.csv', 'novatel_enhanced_fix-data.csv', 'novatel_fix-data.csv', 'novatel_imu-data.csv', 'novatel_odometry-data.csv', 'single-packet-payload-bytes.data', 'single-packet-tele-payload-bytes.data')
-    test.run(10)
+    test.run(100)
