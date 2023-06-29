@@ -10,6 +10,7 @@ Dependencies:
 * pandas
 
 TODOs:
+* add functionality to generate csv with averages in results_processor.py - could call on Sheet class from full_test.py
 * allow for blank args in results_processor.get_data()
 * continue related work investigation
 * box plot of counts from characterization.py
