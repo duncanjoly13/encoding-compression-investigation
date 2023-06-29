@@ -8,8 +8,10 @@ Dependencies:
 * numpy
 
 TODOs:
+* write script to run test X times and take averages for each datapoint
 * continue related work investigation
 * box plot of counts from characterization.py
+* consider adding console status updates
 * work on readme
 * find file size where preferred order switches - between 10 and 95MB - binary search
 * implement asymmetric key encryption
