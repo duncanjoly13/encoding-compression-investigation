@@ -9,6 +9,7 @@ class Test:
         self.keysFolder = r'./keys/'
         self.basefilenames = list(filenames)
         self.characterKeySize = 8
+        self.repetitions = int
 
         if os.path.exists(self.resultsFolder):
             print("%s exists!" % self.resultsFolder)
@@ -36,10 +37,13 @@ class Test:
         for filename in filenames:
             self.basefilenames.append(self.resultsFolder + filename)
             
-    def run(self):
-        for filename in self.basefilenames:
-            self.compressionFirst(filename, self.characterKeySize)
-            self.encryptionFirst(filename, self.characterKeySize)
+    def run(self, repetitions = 1):
+        self.repetitions = repetitions
+        for x in range(repetitions):
+            self.currentRepetition = x
+            for filename in self.basefilenames:
+                self.compressionFirst(filename, self.characterKeySize)
+                self.encryptionFirst(filename, self.characterKeySize)
 
         if os.path.isdir(self.resultsFolder):
             shutil.rmtree(self.resultsFolder)
@@ -110,11 +114,11 @@ class Test:
                 if finalSize != os.path.getsize(filename):
                     print(filename, 'with', compObj.type, 'then', encObj.type + ': SIZE DIFFERS')
 
-                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str("{:.4f}".format(encryptionTime)) + ',') + 
-                                        (str("{:.4f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str("{:.4f}".format(decompressionTime)) + ',') + 
-                                        (str("{:.4f}".format(decryptionTime)) + ',') + (str("{:.4f}".format(intermediateWriteTime)) + ',') + (str("{:.4f}".format(intermediateReadTime)) + ',') + (str("{:.4f}".format(finalWriteTime)) + ',') + 
-                                        (str(firstIntermediateSize) + ',') + (str("{:.4f}".format(compFirstInitialCharacter['mean']) + ',')) + (str("{:.4f}".format(compFirstInitialCharacter['std']) + ',')) + 
-                                        (str("{:.4f}".format(compFirstInitialCharacter['max'])) + ',') + (str(compFirstInitialCharacter['total']) + ',') + ('N/A,') + ('N/A,') + ('N/A,') + ('N/A') + '\n')
+                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Compression First,') + (str(encryptionTime) + ',') + 
+                                        (str(compressionTime) + ',') + (str(os.path.getsize(str(filename + compObj.suffix + encObj.suffix))) + ',') + (str(decompressionTime) + ',') + 
+                                        (str(decryptionTime) + ',') + (str(intermediateWriteTime) + ',') + (str(intermediateReadTime) + ',') + (str(finalWriteTime) + ',') + 
+                                        (str(firstIntermediateSize) + ',') + (str(compFirstInitialCharacter['mean']) + ',') + (str(compFirstInitialCharacter['std']) + ',') + 
+                                        (str(compFirstInitialCharacter['max']) + ',') + (str(compFirstInitialCharacter['total']) + ',') + ('N/A,') + ('N/A,') + ('N/A,') + ('N/A,') + str(self.currentRepetition) + '\n')
 
     def encryptionFirst(self, filename, characterKeySize):
         with open(filename, 'rb') as file:
@@ -172,17 +176,17 @@ class Test:
                 if finalSize != os.path.getsize(filename):
                     print(filename, 'with', encObj.type, 'then', compObj.type + ': SIZE DIFFERS')
 
-                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str("{:.4f}".format(encryptionTime)) + ',') + 
-                                    (str("{:.4f}".format(compressionTime)) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str("{:.4f}".format(decompressionTime)) + ',') + 
-                                    (str("{:.4f}".format(decryptionTime)) + ',') + (str("{:.4f}".format(intermediateWriteTime)) + ',') + (str("{:.4f}".format(intermediateReadTime)) + ',') + (str("{:.4f}".format(finalWriteTime)) + ',') + 
-                                    (str(firstIntermediateSize) + ',') + (str("{:.4f}".format(encFirstInitialCharacter['mean'])) + ',') + (str("{:.4f}".format(encFirstInitialCharacter['std'])) + ',') + 
-                                    (str("{:.4f}".format(encFirstInitialCharacter['max'])) + ',') + (str(encFirstInitialCharacter['total']) + ',') + (str("{:.4f}".format(afterEncCharacter['mean']) + ',')) + 
-                                    (str("{:.4f}".format(afterEncCharacter['std'])) + ',') + (str("{:.4f}".format(afterEncCharacter['max'])) + ',') + (str(afterEncCharacter['total'])) + '\n')
+                self.results.addData((filename[filename.rfind('/') + 1:] + ',') + (str(os.path.getsize(filename)) + ',') +(encObj.type + ',') + (compObj.type + ',') + ('Encryption First,') + (str(encryptionTime) + ',') + 
+                                    (str(compressionTime) + ',') + (str(os.path.getsize(str(filename + encObj.suffix + compObj.suffix))) + ',') + (str(decompressionTime) + ',') + 
+                                    (str(decryptionTime) + ',') + (str(intermediateWriteTime) + ',') + (str(intermediateReadTime) + ',') + (str(finalWriteTime) + ',') + 
+                                    (str(firstIntermediateSize) + ',') + (str(encFirstInitialCharacter['mean']) + ',') + (str(encFirstInitialCharacter['std']) + ',') + 
+                                    (str(encFirstInitialCharacter['max']) + ',') + (str(encFirstInitialCharacter['total']) + ',') + (str(afterEncCharacter['mean']) + ',') + 
+                                    (str(afterEncCharacter['std']) + ',') + (str(afterEncCharacter['max']) + ',') + (str(afterEncCharacter['total']) + ',') + str(self.currentRepetition) + '\n')
 
 class Sheet:
     def __init__(self):
         self.filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')
-        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B),initial characterization - mean,initial characterization - std,initial characterization - max,initial characterization - total keys,after encryption characterization - mean,after encryption characterization - std,after encryption characterization - max,after encryption characterization - total keys\n'
+        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B),initial characterization - mean,initial characterization - std,initial characterization - max,initial characterization - total keys,after encryption characterization - mean,after encryption characterization - std,after encryption characterization - max,after encryption characterization - total keys,repetition #\n'
         
         if os.path.exists(self.filename):
             print('Results file %s exists!' % self.filename)
@@ -197,6 +201,5 @@ class Sheet:
             file.close()
 
 if __name__ == '__main__':
-    #test = Test('2000-word-text.txt', '10_mb.pdf', 'enwik8_1mb.txt', 'enwik8_10mb.txt', 'enwik8_95mb.txt')
-    test = Test('enwik8_1mb.txt')
-    test.run()
+    test = Test('mobileeye_ego_lane_center-data.csv', 'mobileeye_lane_markers-data.csv', 'novatel_enhanced_fix-data.csv', 'novatel_fix-data.csv', 'novatel_imu-data.csv', 'novatel_odometry-data.csv', 'single-packet-payload-bytes.data', 'single-packet-tele-payload-bytes.data')
+    test.run(10)
