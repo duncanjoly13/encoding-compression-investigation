@@ -8,7 +8,7 @@ Dependencies:
 * numpy
 
 TODOs:
-* write script to run test X times and take averages for each datapoint
+* allow for blank args in results_processor.get_data()
 * continue related work investigation
 * box plot of counts from characterization.py
 * consider adding console status updates
