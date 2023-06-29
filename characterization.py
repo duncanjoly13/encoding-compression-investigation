@@ -1,6 +1,6 @@
 import numpy as np
 
-def getCharacter(data, keySize = 10):
+def getCharacter(data, keySize = 8):
     demographic = {}
     counts = []
 
