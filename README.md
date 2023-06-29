@@ -6,6 +6,8 @@ Dependencies:
 * pycryptodome
 * fernet
 * numpy
+* glob
+* pandas
 
 TODOs:
 * allow for blank args in results_processor.get_data()
