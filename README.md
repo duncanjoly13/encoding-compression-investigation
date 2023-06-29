@@ -8,9 +8,9 @@ Dependencies:
 * numpy
 
 TODOs:
-* begin and document related work investigation
+* continue related work investigation
 * box plot of counts from characterization.py
-* work on readme.md
+* work on readme
 * find file size where preferred order switches - between 10 and 95MB - binary search
 * implement asymmetric key encryption
 * implement lossy compression algorithm
