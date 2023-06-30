@@ -184,9 +184,9 @@ class Test:
                                     (str(afterEncCharacter['std']) + ',') + (str(afterEncCharacter['max']) + ',') + (str(afterEncCharacter['total']) + ',') + str(self.currentRepetition) + '\n')
 
 class Sheet:
-    def __init__(self, filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv')):
+    def __init__(self, filename = str(str(time.strftime("%Y-%m-%d--%H-%M")) + '-results.csv'), header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B),initial characterization - mean,initial characterization - std,initial characterization - max,initial characterization - total keys,after encryption characterization - mean,after encryption characterization - std,after encryption characterization - max,after encryption characterization - total keys,repetition #\n'):
         self.filename = filename
-        self.header = 'source file,source file size (B),encryption algorithm,compression algorithm,order,encryption time (ms),compression time (ms),encrypted and compressed file size (B),decompression time (ms),decryption time (ms),intermediate write time(ms),intermediate read time(ms),final write time(ms),first intermediate size (after first operation) (B),initial characterization - mean,initial characterization - std,initial characterization - max,initial characterization - total keys,after encryption characterization - mean,after encryption characterization - std,after encryption characterization - max,after encryption characterization - total keys,repetition #\n'
+        self.header = header
         
         if os.path.exists(self.filename):
             print('File %s exists!' % self.filename)
