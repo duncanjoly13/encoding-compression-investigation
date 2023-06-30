@@ -10,11 +10,11 @@ Dependencies:
 * pandas
 
 TODOs:
+* fix results_processor.get_data()
 * investigate timings
-* add functionality to generate csv with averages in results_processor.py - could call on Sheet class from full_test.py
+* add data folder for visual simplicity in directory
 * allow for blank args in results_processor.get_data()
 * continue related work investigation
-* box plot of counts from characterization.py
 * consider adding console status updates
 * work on readme
 * find file size where preferred order switches - between 10 and 95MB - binary search
