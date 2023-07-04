@@ -201,5 +201,8 @@ class Sheet:
             file.close()
 
 if __name__ == '__main__':
-    test = Test('mobileeye_ego_lane_center-data.csv', 'mobileeye_lane_markers-data.csv', 'novatel_enhanced_fix-data.csv', 'novatel_fix-data.csv', 'novatel_imu-data.csv', 'novatel_odometry-data.csv', 'single-packet-payload-bytes.data', 'single-packet-tele-payload-bytes.data')
-    test.run(100)
+    ''' Large Files '''
+    test = Test('10_mb.pdf','enwik8_10mb.txt','enwik8_95mb.txt')
+    '''Small Files
+    test = Test('enwik8_1mb.txt','mobileeye_ego_lane_center-data.csv', 'mobileeye_lane_markers-data.csv', 'novatel_enhanced_fix-data.csv', 'novatel_fix-data.csv', 'novatel_imu-data.csv', 'novatel_odometry-data.csv', 'single-packet-payload-bytes.data', 'single-packet-tele-payload-bytes.data')'''
+    test.run(5)
