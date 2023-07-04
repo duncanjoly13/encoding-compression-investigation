@@ -10,8 +10,10 @@ Dependencies:
 * pandas
 
 TODOs:
-* fix results_processor.get_data()
 * investigate timings
+* gslide at 31.5" x 42"
+* table with summary (1/12 of poster size) enc then comp VS comp then enc - number of tests, variation, over time, etc
+* graphs
 * add data folder for visual simplicity in directory
 * allow for blank args in results_processor.get_data()
 * continue related work investigation
@@ -20,7 +22,6 @@ TODOs:
 * find file size where preferred order switches - between 10 and 95MB - binary search
 * implement asymmetric key encryption
 * implement lossy compression algorithm
-* graphs
 * broad narrative
 * more test file types and sizes
 * consider Python Style Guide
