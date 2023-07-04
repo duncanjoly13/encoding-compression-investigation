@@ -3,7 +3,7 @@ import gzip, bz2, zipfile, io, lzma
 class NoZip:
     def __init__(self, data):
         self.data = data
-        self.type = 'noZip'
+        self.type = 'NoZip'
         self.suffix = '.nozip'
 
     def compress(self):
