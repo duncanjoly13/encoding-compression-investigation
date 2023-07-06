@@ -36,4 +36,5 @@ def edit(filename):
 
 if __name__ == '__main__':
     files = glob.glob('*results.csv')
-    edit(files[0])
+    for file in files:
+        edit(file)
