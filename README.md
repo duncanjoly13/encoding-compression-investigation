@@ -11,8 +11,7 @@ Dependencies:
 
 TODOs:
 * investigate timings
-* table with summary (1/12 of poster size) enc then comp VS comp then enc - number of tests, variation, over time, etc
-* graphs
+* continue work on ppt (graphs, written sections)
 * add data folder for visual simplicity in directory
 * allow for blank args in results_processor.get_data()
 * continue related work investigation
