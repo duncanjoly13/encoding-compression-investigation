@@ -81,4 +81,4 @@ if __name__ == '__main__':
         print('max:', get_max(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First', 'encryption time (ms)'))
         print('min:', get_min(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First', 'encryption time (ms)'))
 
-        # create_csv(data, file)
+        create_csv(data, file)
