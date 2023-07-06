@@ -69,16 +69,18 @@ if __name__ == '__main__':
     files = glob.glob('*results-PROCESSED.csv')
     for file in files:
         data = pd.read_csv(file)
-        print('mean:', get_mean(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Compression First', 'encryption time (ms)'))
-        print('length:', get_length(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Compression First'))
-        print('std:', get_std(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Compression First', 'encryption time (ms)'))
-        print('max:', get_max(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Compression First', 'encryption time (ms)'))
-        print('min:', get_min(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Compression First', 'encryption time (ms)'))
+        file = 'single-packet-tele-payload-bytes.data'
+        encAlg = 'Fernet'
+        print('mean:', get_mean(data, file, encAlg, 'NoZip', 'Compression First', 'encryption time (ms)'))
+        print('length:', get_length(data, file, encAlg, 'NoZip', 'Compression First'))
+        print('std:', get_std(data, file, encAlg, 'NoZip', 'Compression First', 'encryption time (ms)'))
+        print('max:', get_max(data, file, encAlg, 'NoZip', 'Compression First', 'encryption time (ms)'))
+        print('min:', get_min(data, file, encAlg, 'NoZip', 'Compression First', 'encryption time (ms)'))
         print('++++++++++++++++++++++++++++++')
-        print('mean:', get_mean(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First', 'encryption time (ms)'))
-        print('length:', get_length(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First'))
-        print('std:', get_std(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First', 'encryption time (ms)'))
-        print('max:', get_max(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First', 'encryption time (ms)'))
-        print('min:', get_min(data, 'single-packet-tele-payload-bytes.data', 'Fernet', 'NoZip', 'Encryption First', 'encryption time (ms)'))
+        print('mean:', get_mean(data, file, encAlg, 'NoZip', 'Encryption First', 'encryption time (ms)'))
+        print('length:', get_length(data, file, encAlg, 'NoZip', 'Encryption First'))
+        print('std:', get_std(data, file, encAlg, 'NoZip', 'Encryption First', 'encryption time (ms)'))
+        print('max:', get_max(data, file, encAlg, 'NoZip', 'Encryption First', 'encryption time (ms)'))
+        print('min:', get_min(data, file, encAlg, 'NoZip', 'Encryption First', 'encryption time (ms)'))
 
         create_csv(data, file)
