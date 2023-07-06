@@ -8,6 +8,8 @@ Dependencies:
 * numpy
 * glob
 * pandas
+* matplotlib
+* scipy
 
 TODOs:
 * investigate timings
