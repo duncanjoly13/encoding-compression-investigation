@@ -13,11 +13,14 @@ Dependencies:
 
 TODOs:
 * investigate timings
-* continue work on ppt (graphs, written sections)
+* continue work on presentation (graphs, written sections)
 * add data folder for visual simplicity in directory
 * allow for blank args in results_processor.get_data()
+* switch variables to underlined_lowercase from camelCase
 * continue related work investigation
 * consider adding console status updates
+* prepare code for release
+* documentation
 * work on readme
 * find file size where preferred order switches - between 10 and 95MB - binary search
 * implement asymmetric key encryption
@@ -25,4 +28,3 @@ TODOs:
 * broad narrative
 * more test file types and sizes
 * consider Python Style Guide
-* documentation
