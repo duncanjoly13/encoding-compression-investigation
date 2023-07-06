@@ -9,7 +9,15 @@ desired_filesize = 10239975
 data_df = data_df[data_df['encryption algorithm'] != 'NoEnc']
 data_df = data_df[data_df['compression algorithm'] != 'NoZip']
 
-data_df['operation id'] = data_df['order'] + data_df['compression algorithm'] + data_df['encryption algorithm']
+data_df['operation id'] = data_df['order'] + '-' + data_df['compression algorithm'] + '-' + data_df['encryption algorithm']
+
+comp_first_sub_df = data_df[data_df['order'] == 'Compression First']
+comp_first_sub_df['operation id'] = comp_first_sub_df['compression algorithm'] + '-then-' + comp_first_sub_df['encryption algorithm']
+
+enc_first_sub_df = data_df[data_df['order'] == 'Encryption First']
+enc_first_sub_df['operation id'] = enc_first_sub_df['encryption algorithm'] + '-then-' +  enc_first_sub_df['compression algorithm']
+
+data_df = pd.concat([comp_first_sub_df,enc_first_sub_df])
 
 each_unique_filesize = data_df['source file size (B)'].unique()
 each_unique_filesize.sort()
