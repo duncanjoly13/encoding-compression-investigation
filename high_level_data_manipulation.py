@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
 
 # ===========================
 # high level manipulation of the data
@@ -8,10 +9,6 @@ data_df = pd.read_csv("completed_results\\2023-07-03--11-40_SMALL_results-PROCES
 # ===========================
 '''data_df = data_df[data_df['encryption algorithm'] != 'NoEnc']
 data_df = data_df[data_df['compression algorithm'] != 'NoZip']'''
-
-# print(data_df['compression algorithm'].nunique())
-
-# print(data_df['source file'].nunique())
 
 data_df['operation id'] = data_df['order'] + data_df['compression algorithm'] + data_df['encryption algorithm']
 
