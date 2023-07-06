@@ -15,10 +15,10 @@ each_unique_filesize = data_df['source file size (B)'].unique()
 each_unique_filesize.sort()
 
 for filesize in each_unique_filesize:
-    print('file:', filesize, 'B ...')
+    print('file: ' + str(filesize) + 'B...')
     sub_df = data_df[data_df['source file size (B)'] == filesize]
-    print(sub_df[sub_df['order'] == 'Compression First'][metric].mean())
-    print(sub_df[sub_df['order'] == 'Encryption First'][metric].mean())
+    print('compression first mean (ms)', sub_df[sub_df['order'] == 'Compression First'][metric].mean())
+    print('encryption first mean (ms)', sub_df[sub_df['order'] == 'Encryption First'][metric].mean())
 
     '''print('comp only', str(sub_df[(sub_df['compression algorithm'] != 'NoZip') & (sub_df['encryption algorithm'] == 'NoEnc')][metric].mean()))
     print('enc only', str(sub_df[(sub_df['compression algorithm'] == 'NoZip') & (sub_df['encryption algorithm'] != 'NoEnc')][metric].mean()))'''
@@ -49,3 +49,4 @@ for filesize in each_unique_filesize:
     test_group_df.to_csv('./filesize-{}.csv'.format(filesize), index = False)
     best = test_group_df[test_group_df['average'] == test_group_df['average'].min()]
     print(best)
+    print()
