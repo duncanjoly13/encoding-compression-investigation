@@ -46,7 +46,7 @@ for filesize in each_unique_filesize:
     print(test_result)
     print(test_result.confidence_interval())
     
-    test_group_df.to_csv('./filesize-{}.csv'.format(filesize), index = False)
+    # test_group_df.to_csv('./filesize-{}.csv'.format(filesize), index = False)
     best = test_group_df[test_group_df['average'] == test_group_df['average'].min()]
     print(best)
     print()
