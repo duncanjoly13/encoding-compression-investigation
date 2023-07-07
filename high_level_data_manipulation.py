@@ -41,7 +41,7 @@ for filesize in each_unique_filesize:
         plt.ylabel('Operation Time (ms)')
         plt.suptitle('')
         plt.title('{} and {} in a 10MB File'.format(comp_alg, enc_alg))
-        plt.savefig('best_algs_10mb.png', dpi=300, bbox_inches='tight', pad_inches=.25)
+        plt.savefig('RENAME_THIS.png', dpi=300, bbox_inches='tight', pad_inches=.25)
         plt.close()
     test_group_df = pd.DataFrame()
     for id in data_df['operation id'].unique():
