@@ -8,6 +8,7 @@ desired_filesize = 10239975
 enc_alg = 'NaCl'
 comp_alg = 'gzip'
 
+# USED TO FILTER OUT ENC/COMP ONLY CASES
 '''data_df = data_df[data_df['encryption algorithm'] != 'NoEnc']
 data_df = data_df[data_df['compression algorithm'] != 'NoZip']'''
 
@@ -22,11 +23,14 @@ enc_first_sub_df = data_df[data_df['order'] == 'Encryption First']
 enc_first_sub_df['operation id'] = enc_first_sub_df['encryption algorithm'] + '-then-' +  enc_first_sub_df['compression algorithm']
 enc_first_sub_df['approach'] = 'Encryption First'
 
+# ONLY NEEDED IF EXAMINING ENC/COMP ONLY CASES AT HIGH LEVEL
+###############
 no_enc_sub_df = data_df[data_df['encryption algorithm'] == 'NoEnc']
 no_enc_sub_df['approach'] = 'Compression Only'
 
 no_comp_sub_df = data_df[data_df['compression algorithm'] == 'NoZip']
 no_comp_sub_df['approach'] = 'Encryption Only'
+###############
 
 data_df = pd.concat([comp_first_sub_df,enc_first_sub_df, no_enc_sub_df, no_comp_sub_df])
 
@@ -44,7 +48,7 @@ for filesize in each_unique_filesize:
     no_comp_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == 'NoZip') & (correct_filesize_df['encryption algorithm'] == enc_alg) & (correct_filesize_df['order'] == 'Compression First')]
     sub_df = pd.concat([correct_algs_df, no_enc_df, no_comp_df])'''
 
-    # FOR AVERAGES AND BASELINES (COMP FIRST, ENC FIRST, COMP ONLY, ENC ONLY)
+    # FOR AVERAGES AND BASELINES (COMP FIRST, ENC FIRST, COMP ONLY, ENC ONLY), requires no_enc_sub_df and no_comp_sub_df to be active above
     sub_df = correct_filesize_df
         
     print('compression first mean (ms)', sub_df[sub_df['order'] == 'Compression First'][metric].mean())
