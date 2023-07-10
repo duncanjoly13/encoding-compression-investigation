@@ -1,13 +1,19 @@
+# import modules
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
 
+# set path to results file
 data_df = pd.read_csv("completed_results\\2023-07-04--00-09_LARGE-32_results-PROCESSED.csv")
+# set to column name
 metric = 'total time EXCL. read + write times (ms)'
+# set to filesize for graphing
 desired_filesize = 1086844
+# set to algorithm names
 enc_alg = 'NaCl'
-second_enc_alg = 'Fernet'
 comp_alg = 'gzip'
+second_enc_alg = 'Fernet'
 second_comp_alg = 'bzip'
 
 # USED TO FILTER OUT ENC/COMP ONLY CASES
@@ -73,7 +79,9 @@ for filesize in each_unique_filesize:
         plt.title('Two Algorithmic Combinations and Their Inverses in a 1MB File'.format(comp_alg, enc_alg))
         plt.savefig('RENAME_THIS.png', dpi = 300, bbox_inches = 'tight', pad_inches = .25)
         plt.close()
+
     test_group_df = pd.DataFrame()
+
     for id in data_df['operation id'].unique():
         second_df = sub_df[sub_df['operation id'] == id]
         row = pd.DataFrame()
