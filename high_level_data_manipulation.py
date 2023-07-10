@@ -15,7 +15,7 @@ comp_alg = 'gzip'
 second_enc_alg = 'Fernet'
 second_comp_alg = 'bzip'
 
-# USED TO FILTER OUT ENC/COMP ONLY CASES
+# used to filter out comp/enc only cases
 '''data_df = data_df[data_df['encryption algorithm'] != 'NoEnc']
 data_df = data_df[data_df['compression algorithm'] != 'NoZip']'''
 
@@ -30,7 +30,7 @@ enc_first_sub_df = data_df[data_df['order'] == 'Encryption First']
 enc_first_sub_df['operation id'] = enc_first_sub_df['encryption algorithm'] + '-then-' +  enc_first_sub_df['compression algorithm']
 enc_first_sub_df['approach'] = 'Encryption First'
 
-# ONLY NEEDED IF EXAMINING ENC/COMP ONLY CASES AT HIGH LEVEL
+# only needed if examining comp/enc only cases
 ###############
 no_enc_sub_df = data_df[data_df['encryption algorithm'] == 'NoEnc']
 no_enc_sub_df['approach'] = 'Compression Only'
@@ -39,7 +39,7 @@ no_comp_sub_df = data_df[data_df['compression algorithm'] == 'NoZip']
 no_comp_sub_df['approach'] = 'Encryption Only'
 ###############
 
-# ADD no_enc_sub_df, no_comp_sub_df IF ACTIVE
+# add no_enc_sub_df, no_comp_sub_df if they are assigned
 data_df = pd.concat([comp_first_sub_df,enc_first_sub_df])
 
 each_unique_filesize = data_df['source file size (B)'].unique()
@@ -50,19 +50,20 @@ for filesize in each_unique_filesize:
     
     correct_filesize_df = data_df[data_df['source file size (B)'] == filesize]
 
-    # FOR SPECIFIC ALGS AND THEIR BASELINES
+    # graphing code for specific algorithms and their combinations
     '''correct_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == enc_alg)]
     no_enc_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == 'NoEnc') & (correct_filesize_df['order'] == 'Compression First')]
     no_comp_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == 'NoZip') & (correct_filesize_df['encryption algorithm'] == enc_alg) & (correct_filesize_df['order'] == 'Compression First')]
     sub_df = pd.concat([correct_algs_df, no_enc_df, no_comp_df])'''
 
-    # FOR AVERAGES AND BASELINES (COMP FIRST, ENC FIRST, COMP ONLY, ENC ONLY), requires no_enc_sub_df and no_comp_sub_df to be active above
+    # for averages and their baselines (comp first, enc first, comp only, enc only), requires no_enc_sub_df and no_comp_sub_df to be active above
     '''sub_df = correct_filesize_df'''
 
-    # FOR TWO SPECIFIC ALGS WITHOUT BASELINES - REQUIRES second_comp_alg AND second_enc_alg
+    # for two combinations and their inverses - requires second_comp_alg and second_enc_alg to be assigned
     first_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == enc_alg)]
     second_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == second_comp_alg) & (correct_filesize_df['encryption algorithm'] == second_enc_alg)]
     sub_df = pd.concat([first_algs_df, second_algs_df])
+    # edit categories to change order of items on x-axis
     sub_df['operation id'] = pd.Categorical(sub_df['operation id'], categories = ['bzip-then-Fernet', 'Fernet-then-bzip', 'gzip-then-NaCl', 'NaCl-then-gzip'], ordered = True)
     sub_df = sub_df.sort_values(by = ['operation id'])
 
@@ -75,12 +76,12 @@ for filesize in each_unique_filesize:
         plt.xlabel('Algorithmic Combination')
         plt.ylabel('Operation Time (ms)')
         plt.suptitle('')
+        # edit title
         plt.title('Two Algorithmic Combinations and Their Inverses in a 1MB File'.format(comp_alg, enc_alg))
         plt.savefig('RENAME_THIS.png', dpi = 300, bbox_inches = 'tight', pad_inches = .25)
         plt.close()
 
     test_group_df = pd.DataFrame()
-
     for id in data_df['operation id'].unique():
         second_df = sub_df[sub_df['operation id'] == id]
         row = pd.DataFrame()
