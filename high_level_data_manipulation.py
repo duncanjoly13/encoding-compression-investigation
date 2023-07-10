@@ -4,9 +4,11 @@ from scipy.stats import ttest_ind
 
 data_df = pd.read_csv("completed_results\\2023-07-04--00-09_LARGE-32_results-PROCESSED.csv")
 metric = 'total time EXCL. read + write times (ms)'
-desired_filesize = 10239975
+desired_filesize = 1086844
 enc_alg = 'NaCl'
+second_enc_alg = 'Fernet'
 comp_alg = 'gzip'
+second_comp_alg = 'bzip'
 
 # USED TO FILTER OUT ENC/COMP ONLY CASES
 '''data_df = data_df[data_df['encryption algorithm'] != 'NoEnc']
@@ -32,7 +34,8 @@ no_comp_sub_df = data_df[data_df['compression algorithm'] == 'NoZip']
 no_comp_sub_df['approach'] = 'Encryption Only'
 ###############
 
-data_df = pd.concat([comp_first_sub_df,enc_first_sub_df, no_enc_sub_df, no_comp_sub_df])
+# ADD no_enc_sub_df, no_comp_sub_df IF ACTIVE
+data_df = pd.concat([comp_first_sub_df,enc_first_sub_df])
 
 each_unique_filesize = data_df['source file size (B)'].unique()
 each_unique_filesize.sort()
@@ -49,19 +52,26 @@ for filesize in each_unique_filesize:
     sub_df = pd.concat([correct_algs_df, no_enc_df, no_comp_df])'''
 
     # FOR AVERAGES AND BASELINES (COMP FIRST, ENC FIRST, COMP ONLY, ENC ONLY), requires no_enc_sub_df and no_comp_sub_df to be active above
-    sub_df = correct_filesize_df
-        
+    '''sub_df = correct_filesize_df'''
+
+    # FOR TWO SPECIFIC ALGS WITHOUT BASELINES - REQUIRES second_comp_alg AND second_enc_alg
+    first_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == enc_alg)]
+    second_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == second_comp_alg) & (correct_filesize_df['encryption algorithm'] == second_enc_alg)]
+    sub_df = pd.concat([first_algs_df, second_algs_df])
+    sub_df['operation id'] = pd.Categorical(sub_df['operation id'], categories = ['bzip-then-Fernet', 'Fernet-then-bzip', 'gzip-then-NaCl', 'NaCl-then-gzip'], ordered = True)
+    sub_df = sub_df.sort_values(by = ['operation id'])
+
     print('compression first mean (ms)', sub_df[sub_df['order'] == 'Compression First'][metric].mean())
     print('encryption first mean (ms)', sub_df[sub_df['order'] == 'Encryption First'][metric].mean())
 
     if filesize == desired_filesize:
         # by = ['order'] for most, by = ['approach'] for high-level baselines
-        boxplot = sub_df.boxplot(column = [metric], by = ['approach'], rot = 45, showmeans = True, showfliers = False)
+        boxplot = sub_df.boxplot(column = [metric], by = ['operation id'], rot = 45, showmeans = True, showfliers = False)
         plt.xlabel('Algorithmic Combination')
         plt.ylabel('Operation Time (ms)')
         plt.suptitle('')
-        plt.title('Average Operation Times in a 10MB File'.format(comp_alg, enc_alg))
-        plt.savefig('RENAME_THIS.png', dpi=300, bbox_inches='tight', pad_inches=.25)
+        plt.title('Two Algorithmic Combinations and Their Inverses in a 1MB File'.format(comp_alg, enc_alg))
+        plt.savefig('RENAME_THIS.png', dpi = 300, bbox_inches = 'tight', pad_inches = .25)
         plt.close()
     test_group_df = pd.DataFrame()
     for id in data_df['operation id'].unique():
