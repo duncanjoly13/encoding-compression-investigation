@@ -13,6 +13,7 @@ Dependencies:
 
 TODOs:
 * continue work on [presentation](https://docs.google.com/presentation/d/14oVvg1r6otz2AWvUPbUb9OIdrnhWZbaUL2YM-4GuaRQ/edit?usp=sharing "link to private Google Slide") (graphs, written sections)
+* consider rewriting graphing code so each graph has its own function
 * add data folder for visual simplicity in directory
 * continue related work investigation
 * prepare code for release
