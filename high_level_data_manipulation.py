@@ -59,7 +59,7 @@ def specific_size_chart(data_df):
         sub_df = pd.concat([correct_algs_df, no_enc_df, no_comp_df])'''
 
         # graphing code for two combinations and their inverses, includes none cases
-        first_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == enc_alg)]
+        '''first_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == enc_alg)]
         second_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == second_comp_alg) & (correct_filesize_df['encryption algorithm'] == second_enc_alg)]
         no_enc_first_comp_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == comp_alg) & (correct_filesize_df['encryption algorithm'] == 'NoEnc') & (correct_filesize_df['order'] == 'Compression First')]
         no_comp_first_enc_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == 'NoZip') & (correct_filesize_df['encryption algorithm'] == enc_alg) & (correct_filesize_df['order'] == 'Compression First')]
@@ -67,7 +67,7 @@ def specific_size_chart(data_df):
         no_comp_second_enc_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == 'NoZip') & (correct_filesize_df['encryption algorithm'] == second_enc_alg) & (correct_filesize_df['order'] == 'Compression First')]
         sub_df = pd.concat([first_algs_df, second_algs_df, no_enc_first_comp_df, no_comp_first_enc_df, no_enc_second_comp_df, no_comp_second_enc_df])
 
-        print(sub_df['encryption algorithm'].unique())
+        print(sub_df['encryption algorithm'].unique())'''
 
         # for averages and their baselines (comp first, enc first, comp only, enc only), requires no_enc_sub_df and no_comp_sub_df to be active above
         '''sub_df = correct_filesize_df'''
@@ -77,6 +77,8 @@ def specific_size_chart(data_df):
         second_algs_df = correct_filesize_df[(correct_filesize_df['compression algorithm'] == second_comp_alg) & (correct_filesize_df['encryption algorithm'] == second_enc_alg)]
         sub_df = pd.concat([first_algs_df, second_algs_df])'''
 
+        # needed if none of the above are used
+        sub_df = correct_filesize_df
         # used for bar charts in combination with above
         mean_df = pd.DataFrame()
         for id in sub_df['operation id'].unique():
@@ -94,20 +96,21 @@ def specific_size_chart(data_df):
         mean_df['operation id'] = pd.Categorical(mean_df['operation id'], categories = ['bzip-then-NoEnc', 'NoZip-then-Fernet','bzip-then-Fernet', 'Fernet-then-bzip', 'gzip-then-NoEnc', 'NoZip-then-NaCl', 'gzip-then-NaCl', 'NaCl-then-gzip'], ordered = True)
         mean_df = mean_df.sort_values(by = ['operation id'])
 
-        print('compression first mean (ms)', sub_df[sub_df['order'] == 'Compression First'][metric].mean())
-        print('encryption first mean (ms)', sub_df[sub_df['order'] == 'Encryption First'][metric].mean())
+        '''print('compression first mean (ms)', sub_df[sub_df['order'] == 'Compression First'][metric].mean())
+        print('encryption first mean (ms)', sub_df[sub_df['order'] == 'Encryption First'][metric].mean())'''
 
         if filesize == desired_filesize:
             # by = ['order'] for most, by = ['approach'] for high-level baselines
-            # for boxplot:
-            '''boxplot = sub_df.boxplot(column = [metric], by = ['operation id'], rot = 45, showmeans = True, showfliers = False)'''
+            #f or boxplot:
+            print('graphing:', str(filesize))
+            boxplot = sub_df.boxplot(column = [metric], by = ['operation id'], rot = 45, showmeans = True, showfliers = False)
             # for stacked bar chart:
-            barchart = mean_df.plot.bar(x = 'operation id', y = ['encryption time (ms)', 'compression time (ms)', 'decompression time (ms)', 'decryption time (ms)'], stacked = True, rot = 45)
+            '''barchart = mean_df.plot(x = 'operation id', y = ['encryption time (ms)', 'compression time (ms)', 'decompression time (ms)', 'decryption time (ms)'], stacked = True, rot = 45)'''
             plt.xlabel('Algorithmic Combination')
             plt.ylabel('Operation Time (ms)')
             plt.suptitle('')
             # edit title
-            plt.title('Average Timing Breakdowns in Two Algorithmic Combinations and Their Inverses in a 10MB File')
+            plt.title('Encryption and Compression Combinations in a 10MB File')
             plt.savefig('RENAME_THIS.png', dpi = 300, bbox_inches = 'tight', pad_inches = .25)
             plt.close()
 
@@ -186,7 +189,6 @@ def all_sizes_chart(data_df):
         middle_df = sub_df[sub_df['operation id'] == id]
         print(middle_df['source file size (B)'])
         row = pd.DataFrame()
-        row['source file size (B)'] == middle_df['source file size (B)']
         row['operation id'] = [id]
         row['encryption time (ms)'] = [middle_df['encryption time (ms)'].mean()]
         row['compression time (ms)'] = [middle_df['compression time (ms)'].mean()]
@@ -205,7 +207,6 @@ def all_sizes_chart(data_df):
     plt.savefig('RENAME_THIS.png', dpi = 300, bbox_inches = 'tight', pad_inches = .25)
     plt.close()
 
-
 if __name__ == '__main__':
-    # specific_size_chart(data_df)
-    all_sizes_chart(data_df)
+    specific_size_chart(data_df)
+    # all_sizes_chart(data_df)
