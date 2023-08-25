@@ -3,7 +3,6 @@ This project aims to evaluate different combinations of readily available encryp
 
 Dependencies:
 * fernet
-* glob
 * matplotlib
 * numpy
 * pandas
