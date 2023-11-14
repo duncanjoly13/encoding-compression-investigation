@@ -1,7 +1,6 @@
 # import modules
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import ttest_ind
 
 # set path to results file
 data_df = pd.read_csv('completed_results\\2023-07-04--00-09_LARGE-32_results-PROCESSED.csv')
